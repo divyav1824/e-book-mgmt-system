@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Shelf - Collections</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="collect.css">
+<style>
+/* EXTRA STYLES FOR SUPABASE VERSION */
+.empty-state { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: #6b7280; }
+.empty-state svg { width: 64px; height: 64px; margin: 0 auto 16px; opacity: 0.25; display: block; }
+.empty-state h3 { font-size: 20px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+.empty-state p { font-size: 14px; }
+.loading-state { grid-column: 1/-1; text-align: center; padding: 60px; color: #6b7280; font-size: 15px; }
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #10b981; color: white; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 500; z-index: 9999; transition: transform 0.3s ease; white-space: nowrap; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.error { background: #ef4444; }
+
+/* DETAIL VIEW */
+.detail-view { display: none; }
+.detail-view.active { display: block; }
+.collections-view.hidden { display: none; }
+.back-link { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; cursor: pointer; color: #6b7280; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; padding: 0; margin-bottom: 24px; transition: color 0.2s; }
+.back-link:hover { color: #0f1117; }
+.back-link svg { width: 18px; height: 18px; }
+.detail-title { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+.detail-desc { font-size: 15px; color: #6b7280; margin-bottom: 8px; }
+.detail-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+.detail-header-info { flex: 1; }
+.add-books-btn { display: flex; align-items: center; gap: 8px; background: #f9a618; color: #fff; border: none; border-radius: 10px; padding: 12px 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s; white-space: nowrap; }
+.add-books-btn:hover { background: #e09415; }
+.books-in-collection { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.col-book-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.2s; }
+.col-book-card:hover { transform: translateY(-2px); }
+.col-book-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+.col-book-info { padding: 10px 12px; }
+.col-book-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.col-book-author { font-size: 11px; color: #6b7280; }
+.col-book-remove { position: absolute; top: 6px; right: 6px; background: rgba(239,68,68,0.92); color: white; border: none; border-radius: 6px; width: 26px; height: 26px; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+.col-book-card:hover .col-book-remove { display: flex; }
+
+/* ADD BOOKS MODAL */
+.add-books-modal { background: #fff; border-radius: 20px; padding: 32px; width: 560px; max-width: 95vw; max-height: 80vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: modalIn 0.2s ease; }
+.books-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 16px; }
+.book-select-item { border: 2px solid #e5e7eb; border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; position: relative; }
+.book-select-item:hover { border-color: #f9a618; transform: translateY(-1px); }
+.book-select-item.selected { border-color: #f9a618; box-shadow: 0 0 0 3px rgba(249,166,24,0.2); }
+.book-select-item img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+.book-select-title { font-size: 11px; font-weight: 600; padding: 6px 8px; line-height: 1.3; }
+.book-check { display: none; position: absolute; top: 4px; right: 4px; background: #f9a618; color: #fff; border-radius: 50%; width: 20px; height: 20px; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.book-select-item.selected .book-check { display: flex; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fa-solid fa-book-open" style="color: #f9a618;"></i></div>
+    <span>Digital Shelf</span>
+  </div>
+  <div class="sidebar-nav">
+    <a class="nav-item" href="dashpage.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="lib1.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      Library
+    </a>
+    <a class="nav-item active" href="collection.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Collections
+    </a>
+    <a class="nav-item" href="analytics.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Analytics
+    </a>
+    <a class="nav-item" href="setting.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Settings
+    </a>
+  </div>
+  <div class="sidebar-footer">
+    <a class="nav-item" href="#" id="logoutBtn">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Log out
+    </a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- COLLECTIONS LIST VIEW -->
+  <div class="collections-view" id="collectionsView">
+    <div class="page-header">
+      <div class="page-title">
+        <h1>Collections</h1>
+        <p>Organize your books into curated shelves.</p>
+      </div>
+      <button class="btn-new" id="newCollectionBtn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Collection
+      </button>
+    </div>
+    <div class="collections-grid" id="collectionsGrid">
+      <div class="loading-state">Loading collections...</div>
+    </div>
+  </div>
+
+  <!-- COLLECTION DETAIL VIEW -->
+  <div class="detail-view" id="detailView">
+    <button class="back-link" id="backToCollections">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      Back to Collections
+    </button>
+    <div class="detail-header">
+      <div class="detail-header-info">
+        <h1 class="detail-title" id="detailTitle"></h1>
+        <p class="detail-desc" id="detailDesc"></p>
+      </div>
+      <button class="add-books-btn" id="addBooksBtn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Books
+      </button>
+    </div>
+    <div class="books-in-collection" id="booksInCollection"></div>
+  </div>
+
+</main>
+
+<!-- CREATE / EDIT MODAL (same structure as original) -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">New Collection</span>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <p class="modal-subtitle">Give your collection a name and description.</p>
+    <div class="form-group">
+      <label class="form-label">Name <span class="required">*</span></label>
+      <input type="text" class="form-input" id="collectionName" placeholder="e.g. Summer Reading">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-input form-textarea" id="collectionDesc" placeholder="What's this collection about?"></textarea>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <span class="toggle-label">Public</span>
+        <span class="toggle-desc">Anyone with the link can view this collection.</span>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="publicToggle">
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="modalCancel">Cancel</button>
+      <button class="btn-create" id="modalSubmit">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD BOOKS MODAL -->
+<div class="modal-overlay" id="addBooksOverlay">
+  <div class="add-books-modal">
+    <div class="modal-header">
+      <span class="modal-title">Add Books to Collection</span>
+      <button class="modal-close" id="addBooksClose">✕</button>
+    </div>
+    <p class="modal-subtitle">Click books to select, then click "Add Selected".</p>
+    <div class="books-select-grid" id="booksSelectGrid"></div>
+    <div class="modal-actions" style="margin-top:24px;">
+      <button class="btn-cancel" id="addBooksCancel">Cancel</button>
+      <button class="btn-create" id="addBooksSubmit">Add Selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU (same as original) -->
+<div class="context-menu" id="contextMenu">
+  <div class="context-item" id="ctxEdit">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Edit
+  </div>
+  <div class="context-item" id="ctxToggle">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    Toggle Visibility
+  </div>
+  <div class="context-item danger" id="ctxDelete">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+    Delete
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://kit.fontawesome.com/4318880fa2.js" crossorigin="anonymous"></script>
+
+<script type="module">
+import { supabase } from './supabase.js'
+
+// ═══ AUTH ═══
+const { data: { session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const userId = session.user.id
+
+// ═══ LOGOUT ═══
+document.getElementById('logoutBtn').addEventListener('click', async e => {
+  e.preventDefault()
+  await supabase.auth.signOut()
+  window.location.href = 'index.html'
+})
+
+// ═══ STATE ═══
+let collections = []
+let allBooks = []
+let activeCollectionId = null
+let selectedBookIds = new Set()
+let editingCollectionId = null
+let ctxCollectionId = null
+let toastTimer
+
+const defaultImg = 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=200&fit=crop'
+
+// ═══ HELPERS ═══
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast')
+  t.className = 'toast ' + type
+  t.textContent = msg
+  t.classList.add('show')
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000)
+}
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+// ═══ FETCH COLLECTIONS ═══
+async function fetchCollections() {
+  const { data, error } = await supabase
+    .from('collections').select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) { showToast('Error loading collections', 'error'); return }
+  collections = data || []
+  await renderGrid()
+}
+
+// ═══ FETCH ALL USER BOOKS ═══
+async function fetchBooks() {
+  const { data } = await supabase
+    .from('books').select('*').eq('user_id', userId)
+    .order('title', { ascending: true })
+  allBooks = data || []
+}
+
+// ═══ GET BOOKS IN A COLLECTION ═══
+async function getBooksInCollection(collectionId) {
+  const { data } = await supabase
+    .from('collection_books')
+    .select('book_id, books(*)')
+    .eq('collection_id', collectionId)
+  return data?.map(r => r.books).filter(Boolean) || []
+}
+
+// ═══ RENDER GRID (same card design as original) ═══
+async function renderGrid() {
+  const grid = document.getElementById('collectionsGrid')
+
+  if (collections.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <h3>No collections yet</h3>
+        <p>Click "New Collection" to create your first one!</p>
+      </div>`
+    return
+  }
+
+  // Fetch covers for all collections
+  const { data: colBooks } = await supabase
+    .from('collection_books')
+    .select('collection_id, books(cover_url)')
+    .in('collection_id', collections.map(c => c.id))
+
+  grid.innerHTML = ''
+  collections.forEach(c => {
+    const books = colBooks?.filter(cb => cb.collection_id === c.id) || []
+    const covers = books.map(b => b.books?.cover_url).filter(Boolean)
+    const bookCount = books.length
+
+    const card = document.createElement('div')
+    card.className = 'collection-card'
+    // Same HTML structure as original
+    card.innerHTML = `
+      <div class="card-cover">
+        ${covers.length >= 2
+          ? `<div class="cover-mosaic">${covers.slice(0,4).map(img => `<img src="${img}" alt="" loading="lazy" onerror="this.src='${defaultImg}'">`).join('')}</div>`
+          : `<div class="cover-single"><img src="${covers[0] || defaultImg}" alt="" loading="lazy"></div>`}
+        <button class="card-menu" data-id="${c.id}">···</button>
+      </div>
+      <div class="card-body">
+        <div class="card-title-row">
+          <span class="card-title">${esc(c.name)}</span>
+          <span class="badge ${c.is_public ? 'badge-public' : 'badge-private'}">
+            <span class="badge-dot"></span>
+            ${c.is_public ? 'Public' : 'Private'}
+          </span>
+        </div>
+        <p class="card-desc">${esc(c.description || 'No description.')}</p>
+        <div class="card-meta">
+          <span class="card-meta-books">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14"/><path d="M9 3v16"/><path d="M4 19h16"/></svg>
+            ${bookCount} book${bookCount !== 1 ? 's' : ''}
+          </span>
+          <span>${new Date(c.created_at).toLocaleDateString()}</span>
+        </div>
+      </div>`
+
+    card.addEventListener('click', e => { if (!e.target.closest('.card-menu')) openDetail(c) })
+    card.querySelector('.card-menu').addEventListener('click', e => { e.stopPropagation(); openContextMenu(e, c.id) })
+    grid.appendChild(card)
+  })
+}
+
+// ═══ OPEN DETAIL VIEW ═══
+async function openDetail(collection) {
+  activeCollectionId = collection.id
+  document.getElementById('detailTitle').textContent = collection.name
+  document.getElementById('detailDesc').textContent = collection.description || 'No description.'
+  document.getElementById('collectionsView').classList.add('hidden')
+  document.getElementById('detailView').classList.add('active')
+  await renderBooksInCollection(collection.id)
+}
+
+// ═══ RENDER BOOKS IN COLLECTION ═══
+async function renderBooksInCollection(collectionId) {
+  const container = document.getElementById('booksInCollection')
+  container.innerHTML = '<p style="color:#6b7280;font-size:14px;">Loading...</p>'
+  const books = await getBooksInCollection(collectionId)
+
+  if (books.length === 0) {
+    container.innerHTML = `<p style="color:#6b7280;font-size:14px;grid-column:1/-1;">No books yet. Click "Add Books" to add some!</p>`
+    return
+  }
+
+  container.innerHTML = ''
+  books.forEach(b => {
+    const card = document.createElement('div')
+    card.className = 'col-book-card'
+    card.innerHTML = `
+      <img src="${b.cover_url || defaultImg}" alt="${esc(b.title)}" loading="lazy" onerror="this.src='${defaultImg}'">
+      <button class="col-book-remove" title="Remove">✕</button>
+      <div class="col-book-info">
+        <div class="col-book-title">${esc(b.title)}</div>
+        <div class="col-book-author">${esc(b.author)}</div>
+      </div>`
+    card.querySelector('.col-book-remove').addEventListener('click', async () => {
+      await supabase.from('collection_books').delete()
+        .eq('collection_id', collectionId).eq('book_id', b.id)
+      showToast('Book removed from collection')
+      await renderBooksInCollection(collectionId)
+      await renderGrid()
+    })
+    container.appendChild(card)
+  })
+}
+
+// ═══ BACK TO COLLECTIONS ═══
+document.getElementById('backToCollections').addEventListener('click', () => {
+  document.getElementById('detailView').classList.remove('active')
+  document.getElementById('collectionsView').classList.remove('hidden')
+  activeCollectionId = null
+})
+
+// ═══ NEW / EDIT MODAL ═══
+function openModal(editCol = null) {
+  editingCollectionId = editCol?.id || null
+  document.getElementById('modalTitle').textContent = editCol ? 'Edit Collection' : 'New Collection'
+  document.getElementById('modalSubmit').textContent = editCol ? 'Save Changes' : 'Create'
+  document.getElementById('collectionName').value = editCol?.name || ''
+  document.getElementById('collectionDesc').value = editCol?.description || ''
+  document.getElementById('publicToggle').checked = editCol?.is_public || false
+  document.getElementById('modalOverlay').classList.add('open')
+  setTimeout(() => document.getElementById('collectionName').focus(), 100)
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open')
+  editingCollectionId = null
+}
+
+document.getElementById('newCollectionBtn').addEventListener('click', () => openModal())
+document.getElementById('modalClose').addEventListener('click', closeModal)
+document.getElementById('modalCancel').addEventListener('click', closeModal)
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal() })
+
+document.getElementById('modalSubmit').addEventListener('click', async () => {
+  const name = document.getElementById('collectionName').value.trim()
+  if (!name) {
+    document.getElementById('collectionName').style.borderColor = '#dc2626'
+    setTimeout(() => document.getElementById('collectionName').style.borderColor = '', 1500)
+    return
+  }
+  const payload = {
+    name,
+    description: document.getElementById('collectionDesc').value.trim(),
+    is_public: document.getElementById('publicToggle').checked,
+  }
+  if (editingCollectionId) {
+    const { error } = await supabase.from('collections').update(payload).eq('id', editingCollectionId)
+    if (error) { showToast('Error updating collection', 'error'); return }
+    showToast('Collection updated! ✅')
+  } else {
+    const { error } = await supabase.from('collections').insert({ ...payload, user_id: userId })
+    if (error) { showToast('Error creating collection', 'error'); return }
+    showToast('Collection created! 🎉')
+  }
+  closeModal()
+  await fetchCollections()
+})
+
+// ═══ ADD BOOKS MODAL ═══
+document.getElementById('addBooksBtn').addEventListener('click', async () => {
+  await fetchBooks()
+  const existingBooks = await getBooksInCollection(activeCollectionId)
+  const existingIds = new Set(existingBooks.map(b => b.id))
+  selectedBookIds = new Set()
+
+  const grid = document.getElementById('booksSelectGrid')
+  const available = allBooks.filter(b => !existingIds.has(b.id))
+
+  if (available.length === 0) {
+    grid.innerHTML = '<p style="color:#6b7280;font-size:14px;grid-column:1/-1;">All your books are already in this collection, or your library is empty!</p>'
+  } else {
+    grid.innerHTML = ''
+    available.forEach(b => {
+      const item = document.createElement('div')
+      item.className = 'book-select-item'
+      item.innerHTML = `
+        <div class="book-check">✓</div>
+        <img src="${b.cover_url || defaultImg}" alt="${esc(b.title)}" loading="lazy" onerror="this.src='${defaultImg}'">
+        <div class="book-select-title">${esc(b.title)}</div>`
+      item.addEventListener('click', () => {
+        if (selectedBookIds.has(b.id)) { selectedBookIds.delete(b.id); item.classList.remove('selected') }
+        else { selectedBookIds.add(b.id); item.classList.add('selected') }
+      })
+      grid.appendChild(item)
+    })
+  }
+  document.getElementById('addBooksOverlay').classList.add('open')
+})
+
+function closeAddBooks() {
+  document.getElementById('addBooksOverlay').classList.remove('open')
+  selectedBookIds = new Set()
+}
+document.getElementById('addBooksClose').addEventListener('click', closeAddBooks)
+document.getElementById('addBooksCancel').addEventListener('click', closeAddBooks)
+document.getElementById('addBooksOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeAddBooks() })
+
+document.getElementById('addBooksSubmit').addEventListener('click', async () => {
+  if (selectedBookIds.size === 0) { showToast('Please select at least one book!', 'error'); return }
+  const rows = [...selectedBookIds].map(bookId => ({ collection_id: activeCollectionId, book_id: bookId }))
+  const { error } = await supabase.from('collection_books').insert(rows)
+  if (error) { showToast('Error adding books', 'error'); return }
+  showToast(`${selectedBookIds.size} book(s) added! 📚`)
+  closeAddBooks()
+  await renderBooksInCollection(activeCollectionId)
+  await renderGrid()
+})
+
+// ═══ CONTEXT MENU (same as original) ═══
+function openContextMenu(e, id) {
+  ctxCollectionId = id
+  const menu = document.getElementById('contextMenu')
+  menu.classList.add('open')
+  const rect = e.currentTarget.getBoundingClientRect()
+  menu.style.top = (rect.bottom + window.scrollY + 4) + 'px'
+  menu.style.left = (rect.left + window.scrollX - 100) + 'px'
+}
+function closeContextMenu() { document.getElementById('contextMenu').classList.remove('open') }
+
+document.getElementById('ctxEdit').addEventListener('click', () => {
+  closeContextMenu()
+  const col = collections.find(c => c.id === ctxCollectionId)
+  if (col) openModal(col)
+})
+
+document.getElementById('ctxToggle').addEventListener('click', async () => {
+  closeContextMenu()
+  const col = collections.find(c => c.id === ctxCollectionId)
+  if (!col) return
+  const { error } = await supabase.from('collections')
+    .update({ is_public: !col.is_public }).eq('id', ctxCollectionId)
+  if (error) { showToast('Error updating visibility', 'error'); return }
+  showToast(`Collection is now ${!col.is_public ? 'Public' : 'Private'}!`)
+  await fetchCollections()
+})
+
+document.getElementById('ctxDelete').addEventListener('click', async () => {
+  closeContextMenu()
+  const col = collections.find(c => c.id === ctxCollectionId)
+  if (!col || !confirm(`Delete "${col.name}"? This cannot be undone.`)) return
+  await supabase.from('collection_books').delete().eq('collection_id', ctxCollectionId)
+  const { error } = await supabase.from('collections').delete().eq('id', ctxCollectionId)
+  if (error) { showToast('Error deleting collection', 'error'); return }
+  showToast('Collection deleted!')
+  await fetchCollections()
+})
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.context-menu') && !e.target.closest('.card-menu')) closeContextMenu()
+})
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeAddBooks(); closeContextMenu() }
+})
+
+// ═══ INIT ═══
+await fetchCollections()
+await fetchBooks()
+</script>
+</body>
+</html>

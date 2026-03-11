@@ -1,0 +1,761 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Shelf - Reader</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --accent: #f9a618;
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --text: #eaeaea;
+  --muted: #9ca3af;
+}
+html, body { height: 100%; overflow: hidden; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; }
+
+/* TOP BAR */
+.reader-topbar { height: 56px; background: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; }
+.back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; padding: 8px 12px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
+.back-btn:hover { background: rgba(255,255,255,0.08); color: white; }
+.back-btn svg { width: 18px; height: 18px; }
+.book-info { flex: 1; min-width: 0; }
+.book-title-bar { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.book-author-bar { font-size: 12px; color: var(--muted); }
+.topbar-controls { display: flex; align-items: center; gap: 8px; }
+.ctrl-btn { background: rgba(255,255,255,0.08); border: none; color: var(--muted); cursor: pointer; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.ctrl-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+.ctrl-btn svg { width: 18px; height: 18px; }
+.ctrl-btn.active { background: var(--accent); color: #0f1117; }
+
+/* PROGRESS BAR */
+.reading-progress-bar { height: 3px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+.reading-progress-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+
+/* READER AREA */
+.reader-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3a3a3a;
+  overflow: auto;
+  padding: 20px;
+}
+#pageCanvas {
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  border-radius: 2px;
+  display: block;
+  background: white;
+  max-width: 100%;
+}
+
+/* BOTTOM TOOLBAR */
+.reader-toolbar { height: 56px; background: var(--surface); border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; gap: 16px; flex-shrink: 0; padding: 0 20px; }
+.nav-btn { background: rgba(255,255,255,0.08); border: none; color: white; cursor: pointer; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.nav-btn:hover { background: var(--accent); color: #0f1117; }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-btn:disabled:hover { background: rgba(255,255,255,0.08); color: white; }
+.nav-btn svg { width: 20px; height: 20px; }
+.page-indicator { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+.page-input { width: 60px; text-align: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 8px; color: white; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; }
+.page-input:focus { border-color: var(--accent); }
+.zoom-controls { display: flex; align-items: center; gap: 6px; }
+.zoom-btn { background: rgba(255,255,255,0.08); border: none; color: white; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.2s; }
+.zoom-btn:hover { background: rgba(255,255,255,0.15); }
+.zoom-label { font-size: 13px; color: var(--muted); min-width: 44px; text-align: center; }
+
+/* STATE SCREENS */
+.state-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: var(--muted); padding: 40px; text-align: center; width: 100%; }
+.state-screen svg { width: 80px; height: 80px; opacity: 0.2; }
+.state-screen h3 { font-size: 24px; color: white; font-family: 'Playfair Display', serif; }
+.state-screen p { font-size: 15px; line-height: 1.6; max-width: 400px; }
+.state-btn { background: var(--accent); color: #0f1117; border: none; border-radius: 10px; padding: 12px 24px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; text-decoration: none; display: inline-block; margin-top: 8px; }
+.spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TOAST */
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(80px); background: #10b981; color: white; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; z-index: 9999; transition: transform 0.3s ease; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.error { background: #ef4444; }
+
+@media (max-width: 768px) {
+  .book-author-bar { display: none; }
+  .zoom-controls { display: none; }
+  .reader-toolbar { gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="reader-topbar">
+  <button class="back-btn" id="backBtn">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    Library
+  </button>
+  <div class="book-info">
+    <div class="book-title-bar" id="bookTitleBar">Loading...</div>
+    <div class="book-author-bar" id="bookAuthorBar"></div>
+  </div>
+  <div class="topbar-controls">
+    <button class="ctrl-btn" id="downloadBtn" title="Download book">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+    </button>
+    <button class="ctrl-btn" id="fullscreenBtn" title="Fullscreen">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div class="reading-progress-bar">
+  <div class="reading-progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+
+<div class="reader-area" id="readerArea">
+  <div class="state-screen" id="loadingState">
+    <div class="spinner"></div>
+    <h3>Loading your book...</h3>
+    <p id="loadingText">Downloading PDF...</p>
+  </div>
+</div>
+
+
+<div class="reader-toolbar">
+  <button class="nav-btn" id="prevBtn" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+  <div class="page-indicator">
+    <input type="number" class="page-input" id="pageInput" min="1" value="1">
+    <span>of <span id="totalPages">--</span></span>
+  </div>
+  <button class="nav-btn" id="nextBtn" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  </button>
+  <div class="zoom-controls">
+    <button class="zoom-btn" id="zoomOutBtn">−</button>
+    <span class="zoom-label" id="zoomLabel">100%</span>
+    <button class="zoom-btn" id="zoomInBtn">+</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { supabase } from './supabase.js'
+
+// AUTH
+const { data: { session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const userId = session.user.id
+
+// GET BOOK ID
+const params = new URLSearchParams(window.location.search)
+const bookId = params.get('id')
+if (!bookId) { window.location.href = 'lib1.html' }
+
+// FETCH BOOK
+const { data: book } = await supabase
+  .from('books').select('*').eq('id', bookId).eq('user_id', userId).single()
+if (!book) { window.location.href = 'lib1.html' }
+
+// FETCH PROGRESS
+const { data: progress } = await supabase
+  .from('reading_progress').select('*')
+  .eq('book_id', bookId).eq('user_id', userId).single()
+
+// SET INFO
+document.getElementById('bookTitleBar').textContent = book.title
+document.getElementById('bookAuthorBar').textContent = 'by ' + book.author
+document.title = book.title + ' — Digital Shelf'
+
+document.getElementById('backBtn').addEventListener('click', () => window.location.href = 'lib1.html')
+
+// STATE
+let pdfDoc = null
+let currentPage = progress?.current_page || 1
+let totalPages = 0
+let scale = 1.0
+let renderTask = null
+let saveTimer = null
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast')
+  t.className = 'toast ' + type
+  t.textContent = msg
+  t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 2500)
+}
+
+// NO FILE
+if (!book.file_url) {
+  document.getElementById('readerArea').innerHTML = `
+    <div class="state-screen">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <h3>No file uploaded</h3>
+      <p>"${book.title}" doesn't have a PDF attached yet.</p>
+      <a href="lib1.html" class="state-btn">← Back to Library</a>
+    </div>`
+} else {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+
+  try {
+    document.getElementById('loadingText').textContent = 'Downloading PDF...'
+    const resp = await fetch(book.file_url)
+    if (!resp.ok) throw new Error('HTTP ' + resp.status)
+
+    document.getElementById('loadingText').textContent = 'Rendering...'
+    const buffer = await resp.arrayBuffer()
+
+    pdfDoc = await pdfjsLib.getDocument({
+      data: buffer,
+      cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+      cMapPacked: true,
+    }).promise
+
+    totalPages = pdfDoc.numPages
+    document.getElementById('totalPages').textContent = totalPages
+    document.getElementById('pageInput').max = totalPages
+    document.getElementById('nextBtn').disabled = false
+
+    document.getElementById('readerArea').innerHTML = '<canvas id="pageCanvas"></canvas>'
+
+    await renderPage(currentPage)
+
+    if (currentPage > 1) showToast('Resuming from page ' + currentPage + ' 📖')
+
+  } catch(err) {
+    console.error(err)
+    document.getElementById('readerArea').innerHTML = `
+      <div class="state-screen">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <h3>Could not load PDF</h3>
+        <p>Error: ${err.message}. Make sure the books bucket is Public in Supabase Storage.</p>
+        <a href="lib1.html" class="state-btn">← Back to Library</a>
+      </div>`
+  }
+}
+
+// RENDER SINGLE PAGE — high quality rendering
+async function renderPage(num) {
+  if (!pdfDoc) return
+
+  if (renderTask) { renderTask.cancel(); renderTask = null }
+
+  const page = await pdfDoc.getPage(num)
+
+  const readerArea = document.getElementById('readerArea')
+  const availableWidth = readerArea.clientWidth - 40
+  const availableHeight = readerArea.clientHeight - 40
+  const viewport = page.getViewport({ scale: 1 })
+  const scaleW = availableWidth / viewport.width
+  const scaleH = availableHeight / viewport.height
+  // Raised cap from 1.5 → 3.0 for sharper base render
+  const autoScale = Math.min(scaleW, scaleH, 3.0) * scale
+
+  const scaledViewport = page.getViewport({ scale: autoScale })
+
+  const canvas = document.getElementById('pageCanvas')
+  if (!canvas) return
+
+  // Use at least 2x dpr for quality, cap at 3 to avoid memory issues
+  const dpr = Math.min(window.devicePixelRatio || 1, 3)
+  canvas.width = Math.floor(scaledViewport.width * dpr)
+  canvas.height = Math.floor(scaledViewport.height * dpr)
+  canvas.style.width = scaledViewport.width + 'px'
+  canvas.style.height = scaledViewport.height + 'px'
+
+  const ctx = canvas.getContext('2d', { alpha: false })
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = 'high'
+  ctx.scale(dpr, dpr)
+
+  renderTask = page.render({
+    canvasContext: ctx,
+    viewport: scaledViewport,
+    intent: 'display',
+  })
+
+  try {
+    await renderTask.promise
+    renderTask = null
+  } catch(e) {
+    if (e.name !== 'RenderingCancelledException') console.error(e)
+  }
+
+  currentPage = num
+  document.getElementById('pageInput').value = num
+  document.getElementById('prevBtn').disabled = num <= 1
+  document.getElementById('nextBtn').disabled = num >= totalPages
+  document.getElementById('progressFill').style.width = Math.round((num / totalPages) * 100) + '%'
+
+  scheduleSave()
+}
+
+// SAVE PROGRESS
+function scheduleSave() {
+  clearTimeout(saveTimer)
+  saveTimer = setTimeout(async () => {
+    if (!totalPages) return
+    const pct = Math.round((currentPage / totalPages) * 100)
+    await supabase.from('reading_progress').upsert({
+      user_id: userId, book_id: bookId,
+      current_page: currentPage, percent_complete: pct,
+      last_read_at: new Date().toISOString()
+    }, { onConflict: 'user_id,book_id' })
+  }, 2000)
+}
+
+// NAV BUTTONS
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (currentPage > 1) renderPage(currentPage - 1)
+})
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (currentPage < totalPages) renderPage(currentPage + 1)
+})
+
+
+document.getElementById('pageInput').addEventListener('change', e => {
+  const v = parseInt(e.target.value)
+  if (v >= 1 && v <= totalPages) renderPage(v)
+})
+
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { if (currentPage < totalPages) renderPage(currentPage + 1) }
+  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { if (currentPage > 1) renderPage(currentPage - 1) }
+})
+
+
+document.getElementById('zoomInBtn').addEventListener('click', () => {
+  if (scale >= 2.5) return
+  scale += 0.25
+  document.getElementById('zoomLabel').textContent = Math.round(scale * 100) + '%'
+  renderPage(currentPage)
+})
+document.getElementById('zoomOutBtn').addEventListener('click', () => {
+  if (scale <= 0.5) return
+  scale -= 0.25
+  document.getElementById('zoomLabel').textContent = Math.round(scale * 100) + '%'
+  renderPage(currentPage)
+})
+
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  if (!book.file_url) { showToast('No file to download', 'error'); return; }
+  const a = document.createElement('a')
+  a.href = book.file_url
+  a.download = book.title + '.' + (book.format || 'pdf')
+  a.target = '_blank'
+  a.click()
+  showToast('Download started!')
+})
+
+
+document.getElementById('fullscreenBtn').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen()
+    document.getElementById('fullscreenBtn').classList.add('active')
+  } else {
+    document.exitFullscreen()
+    document.getElementById('fullscreenBtn').classList.remove('active')
+  }
+})
+
+
+window.addEventListener('resize', () => {
+  if (pdfDoc) renderPage(currentPage)
+})
+</script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Shelf - Reader</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --accent: #f9a618;
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --text: #eaeaea;
+  --muted: #9ca3af;
+}
+html, body { height: 100%; overflow: hidden; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; }
+
+/* TOP BAR */
+.reader-topbar { height: 56px; background: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; }
+.back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; padding: 8px 12px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
+.back-btn:hover { background: rgba(255,255,255,0.08); color: white; }
+.back-btn svg { width: 18px; height: 18px; }
+.book-info { flex: 1; min-width: 0; }
+.book-title-bar { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.book-author-bar { font-size: 12px; color: var(--muted); }
+.topbar-controls { display: flex; align-items: center; gap: 8px; }
+.ctrl-btn { background: rgba(255,255,255,0.08); border: none; color: var(--muted); cursor: pointer; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.ctrl-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+.ctrl-btn svg { width: 18px; height: 18px; }
+.ctrl-btn.active { background: var(--accent); color: #0f1117; }
+
+/* PROGRESS BAR */
+.reading-progress-bar { height: 3px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+.reading-progress-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+
+/* READER AREA */
+.reader-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3a3a3a;
+  overflow: auto;
+  padding: 20px;
+}
+#pageCanvas {
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  border-radius: 2px;
+  display: block;
+  background: white;
+  max-width: 100%;
+}
+
+/* BOTTOM TOOLBAR */
+.reader-toolbar { height: 56px; background: var(--surface); border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; gap: 16px; flex-shrink: 0; padding: 0 20px; }
+.nav-btn { background: rgba(255,255,255,0.08); border: none; color: white; cursor: pointer; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.nav-btn:hover { background: var(--accent); color: #0f1117; }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-btn:disabled:hover { background: rgba(255,255,255,0.08); color: white; }
+.nav-btn svg { width: 20px; height: 20px; }
+.page-indicator { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+.page-input { width: 60px; text-align: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 8px; color: white; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; }
+.page-input:focus { border-color: var(--accent); }
+.zoom-controls { display: flex; align-items: center; gap: 6px; }
+.zoom-btn { background: rgba(255,255,255,0.08); border: none; color: white; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.2s; }
+.zoom-btn:hover { background: rgba(255,255,255,0.15); }
+.zoom-label { font-size: 13px; color: var(--muted); min-width: 44px; text-align: center; }
+
+/* STATE SCREENS */
+.state-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: var(--muted); padding: 40px; text-align: center; width: 100%; }
+.state-screen svg { width: 80px; height: 80px; opacity: 0.2; }
+.state-screen h3 { font-size: 24px; color: white; font-family: 'Playfair Display', serif; }
+.state-screen p { font-size: 15px; line-height: 1.6; max-width: 400px; }
+.state-btn { background: var(--accent); color: #0f1117; border: none; border-radius: 10px; padding: 12px 24px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; text-decoration: none; display: inline-block; margin-top: 8px; }
+.spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TOAST */
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(80px); background: #10b981; color: white; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; z-index: 9999; transition: transform 0.3s ease; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.error { background: #ef4444; }
+
+@media (max-width: 768px) {
+  .book-author-bar { display: none; }
+  .zoom-controls { display: none; }
+  .reader-toolbar { gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="reader-topbar">
+  <button class="back-btn" id="backBtn">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    Library
+  </button>
+  <div class="book-info">
+    <div class="book-title-bar" id="bookTitleBar">Loading...</div>
+    <div class="book-author-bar" id="bookAuthorBar"></div>
+  </div>
+  <div class="topbar-controls">
+    <button class="ctrl-btn" id="downloadBtn" title="Download book">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+    </button>
+    <button class="ctrl-btn" id="fullscreenBtn" title="Fullscreen">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="reading-progress-bar">
+  <div class="reading-progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<!-- READER AREA -->
+<div class="reader-area" id="readerArea">
+  <div class="state-screen" id="loadingState">
+    <div class="spinner"></div>
+    <h3>Loading your book...</h3>
+    <p id="loadingText">Fetching book details...</p>
+  </div>
+</div>
+
+<!-- BOTTOM TOOLBAR -->
+<div class="reader-toolbar">
+  <button class="nav-btn" id="prevBtn" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+  <div class="page-indicator">
+    <input type="number" class="page-input" id="pageInput" min="1" value="1">
+    <span>of <span id="totalPages">--</span></span>
+  </div>
+  <button class="nav-btn" id="nextBtn" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+  </button>
+  <div class="zoom-controls">
+    <button class="zoom-btn" id="zoomOutBtn">−</button>
+    <span class="zoom-label" id="zoomLabel">100%</span>
+    <button class="zoom-btn" id="zoomInBtn">+</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { supabase } from './supabase.js'
+
+// AUTH
+const { data: { session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const userId = session.user.id
+
+// GET BOOK ID
+const params = new URLSearchParams(window.location.search)
+const bookId = params.get('id')
+if (!bookId) { window.location.href = 'lib1.html' }
+
+// FETCH BOOK — NO user_id filter: any logged-in user can read any book in the shared library
+const { data: book } = await supabase
+  .from('books').select('*').eq('id', bookId).single()
+
+if (!book) { window.location.href = 'lib1.html' }
+
+// FETCH THIS USER'S PROGRESS for this book (personal, stays user-scoped)
+const { data: progress } = await supabase
+  .from('reading_progress').select('*')
+  .eq('book_id', bookId).eq('user_id', userId).single()
+
+// SET INFO
+document.getElementById('bookTitleBar').textContent = book.title
+document.getElementById('bookAuthorBar').textContent = 'by ' + book.author
+document.title = book.title + ' — Digital Shelf'
+
+document.getElementById('backBtn').addEventListener('click', () => window.location.href = 'lib1.html')
+
+// STATE
+let pdfDoc = null
+let currentPage = progress?.current_page || 1
+let totalPages = 0
+let scale = 1.0
+let renderTask = null
+let saveTimer = null
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast')
+  t.className = 'toast ' + type
+  t.textContent = msg
+  t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 2500)
+}
+
+// NO FILE
+if (!book.file_url) {
+  document.getElementById('readerArea').innerHTML = `
+    <div class="state-screen">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <h3>No file uploaded</h3>
+      <p>"${book.title}" doesn't have a PDF attached yet.</p>
+      <a href="lib1.html" class="state-btn">← Back to Library</a>
+    </div>`
+} else {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+
+  try {
+    document.getElementById('loadingText').textContent = 'Downloading PDF...'
+    const resp = await fetch(book.file_url)
+    if (!resp.ok) throw new Error('HTTP ' + resp.status)
+
+    document.getElementById('loadingText').textContent = 'Rendering...'
+    const buffer = await resp.arrayBuffer()
+
+    pdfDoc = await pdfjsLib.getDocument({
+      data: buffer,
+      cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+      cMapPacked: true,
+    }).promise
+
+    totalPages = pdfDoc.numPages
+    document.getElementById('totalPages').textContent = totalPages
+    document.getElementById('pageInput').max = totalPages
+    document.getElementById('nextBtn').disabled = false
+
+    document.getElementById('readerArea').innerHTML = '<canvas id="pageCanvas"></canvas>'
+
+    await renderPage(currentPage)
+
+    if (currentPage > 1) showToast('Resuming from page ' + currentPage + ' 📖')
+
+  } catch(err) {
+    console.error(err)
+    document.getElementById('readerArea').innerHTML = `
+      <div class="state-screen">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <h3>Could not load PDF</h3>
+        <p>Error: ${err.message}. Make sure the books bucket is Public in Supabase Storage.</p>
+        <a href="lib1.html" class="state-btn">← Back to Library</a>
+      </div>`
+  }
+}
+
+// RENDER SINGLE PAGE — high quality rendering
+async function renderPage(num) {
+  if (!pdfDoc) return
+
+  if (renderTask) { renderTask.cancel(); renderTask = null }
+
+  const page = await pdfDoc.getPage(num)
+
+  const readerArea = document.getElementById('readerArea')
+  const availableWidth = readerArea.clientWidth - 40
+  const availableHeight = readerArea.clientHeight - 40
+  const viewport = page.getViewport({ scale: 1 })
+  const scaleW = availableWidth / viewport.width
+  const scaleH = availableHeight / viewport.height
+  const autoScale = Math.min(scaleW, scaleH, 3.0) * scale
+
+  const scaledViewport = page.getViewport({ scale: autoScale })
+
+  const canvas = document.getElementById('pageCanvas')
+  if (!canvas) return
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 3)
+  canvas.width = Math.floor(scaledViewport.width * dpr)
+  canvas.height = Math.floor(scaledViewport.height * dpr)
+  canvas.style.width = scaledViewport.width + 'px'
+  canvas.style.height = scaledViewport.height + 'px'
+
+  const ctx = canvas.getContext('2d', { alpha: false })
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = 'high'
+  ctx.scale(dpr, dpr)
+
+  renderTask = page.render({
+    canvasContext: ctx,
+    viewport: scaledViewport,
+    intent: 'display',
+  })
+
+  try {
+    await renderTask.promise
+    renderTask = null
+  } catch(e) {
+    if (e.name !== 'RenderingCancelledException') console.error(e)
+  }
+
+  currentPage = num
+  document.getElementById('pageInput').value = num
+  document.getElementById('prevBtn').disabled = num <= 1
+  document.getElementById('nextBtn').disabled = num >= totalPages
+  document.getElementById('progressFill').style.width = Math.round((num / totalPages) * 100) + '%'
+
+  scheduleSave()
+}
+
+// SAVE PROGRESS — always saved per user (personal reading progress)
+function scheduleSave() {
+  clearTimeout(saveTimer)
+  saveTimer = setTimeout(async () => {
+    if (!totalPages) return
+    const pct = Math.round((currentPage / totalPages) * 100)
+    await supabase.from('reading_progress').upsert({
+      user_id: userId, book_id: bookId,
+      current_page: currentPage, percent_complete: pct,
+      last_read_at: new Date().toISOString()
+    }, { onConflict: 'user_id,book_id' })
+  }, 2000)
+}
+
+// NAV BUTTONS
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (currentPage > 1) renderPage(currentPage - 1)
+})
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (currentPage < totalPages) renderPage(currentPage + 1)
+})
+
+// PAGE INPUT
+document.getElementById('pageInput').addEventListener('change', e => {
+  const v = parseInt(e.target.value)
+  if (v >= 1 && v <= totalPages) renderPage(v)
+})
+
+// KEYBOARD
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { if (currentPage < totalPages) renderPage(currentPage + 1) }
+  else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { if (currentPage > 1) renderPage(currentPage - 1) }
+})
+
+// ZOOM
+document.getElementById('zoomInBtn').addEventListener('click', () => {
+  if (scale >= 2.5) return
+  scale += 0.25
+  document.getElementById('zoomLabel').textContent = Math.round(scale * 100) + '%'
+  renderPage(currentPage)
+})
+document.getElementById('zoomOutBtn').addEventListener('click', () => {
+  if (scale <= 0.5) return
+  scale -= 0.25
+  document.getElementById('zoomLabel').textContent = Math.round(scale * 100) + '%'
+  renderPage(currentPage)
+})
+
+// DOWNLOAD
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  if (!book.file_url) { showToast('No file to download', 'error'); return; }
+  const a = document.createElement('a')
+  a.href = book.file_url
+  a.download = book.title + '.' + (book.format || 'pdf')
+  a.target = '_blank'
+  a.click()
+  showToast('Download started!')
+})
+
+// FULLSCREEN
+document.getElementById('fullscreenBtn').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen()
+    document.getElementById('fullscreenBtn').classList.add('active')
+  } else {
+    document.exitFullscreen()
+    document.getElementById('fullscreenBtn').classList.remove('active')
+  }
+})
+
+// RE-RENDER ON RESIZE
+window.addEventListener('resize', () => {
+  if (pdfDoc) renderPage(currentPage)
+})
+</script>
+</body>
+</html>

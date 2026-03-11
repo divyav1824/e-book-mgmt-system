@@ -1,0 +1,513 @@
+/* ========================= */
+/* GLOBAL */
+/* ========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Times New Roman', Times, serif;
+}
+
+body{
+    background:#f9f9f9;
+    color:#222;
+    line-height:1.6;
+}
+h6 , .b1{
+    margin-right: 10px;
+    font-size: 15px;
+    margin-top: 15px;
+
+}
+.b2{
+    background-color: #aaaaaaa9;
+    width: 45%;
+    border-radius: 20px;
+    padding-left: 15px;
+    text-align: center;
+    
+}
+
+/* H6 span .span2{
+    color: #eee;
+} */
+/* ========================= */
+/* NAVBAR */
+/* ========================= */
+@media (min-width: 769px){
+    .logo{
+        font-size:24px;
+    }
+
+    .logo i{
+        font-size:24px;
+    }
+    
+
+}
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    position:fixed;
+    width:100%;
+    top:0;
+    background:rgb(215, 213, 213);
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    z-index:1000;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+    font-size:22px;
+}
+
+.logo i{
+    color:#f4a825;   /* Golden color */
+    font-size:22px;
+}
+
+.logo span{
+    color:#111;
+}
+
+nav ul{
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+nav ul li a{
+    text-decoration:none;
+    color:#333;
+    font-weight:500;
+}
+
+.btn{
+    background:#eab251;
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    color:#000;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#d88f15;
+}
+
+.menu-toggle{
+    display:none;
+    font-size:28px;
+    cursor:pointer;
+}
+
+/* ========================= */
+/* HERO */
+/* ========================= */
+
+.icon1{
+    background-color: #d88f15;
+    width:30px;
+    height: 30px;
+    text-align: center;
+    border-radius: 5px;
+    padding-top: 3px;
+    margin-bottom: 15px;
+    
+
+}
+.hero{
+    height:100vh;
+    background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
+    url("hero-books.jpg");
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:center;
+    padding:0 8%;
+    color:white;
+}
+
+.hero-content{
+    max-width:600px;
+}
+
+.hero h1{
+    font-size:60px;
+    margin-bottom:30px;
+    
+}
+
+.hero span{
+    color:#f4a825;
+}
+
+.hero p{
+    margin-bottom:30px;
+    font-size:20px;
+}
+
+/* ========================= */
+/* FEATURES */
+/* ========================= */
+
+.features{
+    padding:100px 8%;
+    text-align:center;
+}
+
+.section-title{
+    font-size:40px;
+}
+
+.section-title span{
+    color:#d88f15;
+}
+
+.sec2{
+    margin-bottom:70px;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:white;
+    padding:40px;
+    border-radius:10px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.05);
+    transition:0.3s;
+    text-align:left;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h3{
+    margin-bottom:15px;
+}
+
+/* ========================= */
+/* TESTIMONIALS */
+/* ========================= */
+
+.testimonials{
+    background:#fff;
+    padding:100px 8%;
+    text-align:center;
+}
+
+.testimonial-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:40px;
+    margin-top:50px;
+    text-align:left;
+}
+
+.testimonial{
+    background:#f9f9f9;
+    padding:30px;
+    border-radius:10px;
+}
+
+.stars{
+    color:#f4a825;
+    margin-bottom:15px;
+    font-size:20px;
+}
+
+.cir{
+    background:#111;
+    color:#fff;
+    width:35px;
+    height:35px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    margin-top:20px;
+}
+
+.testimonial strong{
+    display:block;
+    margin-top:10px;
+}
+
+.des{
+    font-size:13px;
+    color:#555;
+}
+
+/* ========================= */
+/* FOOTER */
+/* ========================= */
+
+/* ========================= */
+/* FOOTER */
+/* ========================= */
+
+footer{
+    background:#111;
+    color:white;
+    padding:60px 8%;
+}
+
+.footer-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:40px;
+}
+
+.footer-brand h2{
+    margin-bottom:15px;
+}
+
+.footer-brand p{
+    color:#ccc;
+    font-size:14px;
+    line-height:1.6;
+}
+
+footer h4{
+    margin-bottom:20px;
+}
+
+footer ul{
+    list-style:none;
+}
+
+footer ul li{
+    margin-bottom:10px;
+}
+
+footer ul li a{
+    text-decoration:none;
+    color:#ccc;
+    font-size:14px;
+    transition:0.3s;
+}
+
+footer ul li a:hover{
+    color:#f4a825;
+}
+
+footer hr{
+    border:none;
+    border-top:1px solid #333;
+    margin:40px 0 20px;
+}
+
+.copy{
+    text-align:center;
+    font-size:14px;
+    color:#aaa;
+}
+
+/* ========================= */
+/* RESPONSIVE FOOTER */
+/* ========================= */
+
+@media (max-width: 768px){
+
+    .footer-grid{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .footer-brand{
+        margin-bottom:20px;
+        text-align: center;
+        
+    }
+    .hero-content .b2{
+        font-size: 10px;
+        margin-left: 120px;
+        width:160px
+    }
+
+}/* ========================= */
+/* SCROLL ANIMATION */
+/* ========================= */
+
+.hidden{
+    opacity:0;
+    transform:translateY(40px);
+    transition:all 0.6s ease;
+}
+
+.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+ @media (max-width: 768px){
+
+    nav{
+        padding:15px 6%;
+    }
+
+    .menu-toggle{
+        display:block;
+    }
+
+    nav ul{
+        position:absolute;
+        top:70px;
+        left:0;
+        width:100%;
+        background:rgb(215, 213, 213);
+        flex-direction:column;
+        align-items:center;
+        gap:20px;
+        padding:20px 0;
+        display:none;
+    }
+
+    nav ul.active{
+        display:flex;
+    }
+
+    .hero{
+        height:auto;
+        padding:120px 6% 60px;
+        text-align:center;
+    }
+
+    .hero h1{
+        font-size:32px;
+    }
+
+    .hero p{
+        font-size:16px;
+    }
+
+    .feature-grid,
+    .testimonial-grid,
+    .footer-grid{
+        grid-template-columns:1fr;
+    }
+
+} 
+
+@media (max-width: 480px){
+
+    .hero h1{
+        font-size:26px;
+    }
+
+    .section-title{
+        font-size:24px;
+    }
+
+    .card{
+        padding:25px;
+    }
+
+}
+ Bottom Navigation Styling */
+ .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding-bottom: env(safe-area-inset-bottom); /* For mobile notched screens */
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #888;
+    font-size: 0.75rem;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: var(--primary-orange);
+}
+
+.nav-item i {
+    width: 20px;
+    height: 20px;
+} */
+
+/* Badge Variations */
+ .badge.pdf {
+    background: #eef2f7;
+    color: #34495e;
+}
+ 
+/* Ensure the main content doesn't get hidden behind the bottom nav */
+ .content {
+    padding-bottom: 100px;
+} 
+
+/* Responsive adjustment: Hide sidebar on small screens if bottom nav is present */
+ @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .content { padding: 1.5rem; }
+    .book-grid { grid-template-columns: repeat(2, 1fr); } 2 columns like the image
+}
+.chart-box{
+    height:220px;
+    max-width:400px;
+    margin:auto;
+} 
+ /* .group cursor-pointer{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+} */
+/* Apply the grid to the PARENT container */
+.book-grid-container {
+    display: grid;
+    /* This forces 4 equal columns across the full available width */
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 24px;
+    width: 100%; /* Ensures it covers the full main area */
+}
+
+.book-item-wrapper {
+    width: 100%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.book-item-wrapper:hover {
+    transform: translateY(-5px);
+}
+
+/* Ensure images maintain a consistent shape as they get wider */
+.book-card-item img {
+    width: 150%;
+    aspect-ratio: 3 / 4; 
+    object-fit: cover;
+    border-radius: 16px;
+}

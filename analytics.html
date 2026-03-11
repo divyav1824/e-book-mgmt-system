@@ -1,0 +1,963 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Shelf - Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="analytic.css">
+</head>
+<body>
+
+<!-- TOPBAR mobile -->
+<!-- <header class="topbar">
+  <button class="hamburger" id="hamburger">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div class="topbar-logo">
+    <div class="logo-icon"><i class="fa-solid fa-book-open" style="color: #f9a618;"></i></div>
+    <span class="topbar-title">Digital Shelf</span>
+  </div>
+</header>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="layout"> -->
+  <!-- SIDEBAR -->
+  <!-- <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-book-open" style="color: #f9a618;"></i></div>
+      <span>Digital Shelf</span>
+    </div>
+    <nav>
+      <a class="nav-item" href="dashpage.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" href="lib1.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span class="nav-label">Library</span>
+      </a>
+      <a class="nav-item" href="collection.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <span class="nav-label">Collections</span>
+      </a>
+      <a class="nav-item active" href="#">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span class="nav-label">Analytics</span>
+      </a>
+      <a class="nav-item" href="setting.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a class="nav-item" href="#" id="collapseBtn">
+        <svg id="collapseIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+        </svg>
+        <span class="nav-label">Collapse</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <span class="nav-label">Log out</span>
+      </a>
+    </div>
+  </aside> -->
+
+  <!-- MAIN -->
+  <!-- <main class="main" id="main"> -->
+
+    <!-- HERO CARD -->
+    <!-- <div class="hero-card">
+      <div class="hero-label">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+        YOUR READING JOURNEY
+      </div>
+      <div class="hero-pages">12,450 pages</div>
+      <div class="hero-sub">across 42 books · 234 hours of reading</div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon"><i class="fa-solid fa-fire" style="color:#f9a618"></i></span>
+            <span class="stat-delta">▲ +3</span>
+          </div>
+          <div class="stat-val">14</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon"><i class="fa-solid fa-bullseye" style="color: #f9a618;"></i></span>
+            <span class="stat-delta">▲ +5%</span>
+          </div>
+          <div class="stat-val">43%</div>
+          <div class="stat-label">Completion</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon"><i class="fa-solid fa-book-open" style="color:#f9a618;"></i></span>
+            <span class="stat-delta" style="color:rgba(255,255,255,0.3)">—</span>
+          </div>
+          <div class="stat-val">5</div>
+          <div class="stat-label">In Progress</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon"><i class="fa-regular fa-clock" style="color: #f9a618;"></i></span>
+            <span class="stat-delta neg">▼ -2h</span>
+          </div>
+          <div class="stat-val">13h</div>
+          <div class="stat-label">Avg / Book</div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- THIS WEEK + RECENT ACTIVITY -->
+    <!-- <div class="two-col">
+      <div class="card">
+        <div class="week-header">
+          <div>
+            <div class="card-title">This Week</div>
+            <div class="card-sub">14.5h total</div>
+          </div>
+          <div class="toggle-btns">
+            <button class="toggle-btn active" data-mode="hours">Hours</button>
+            <button class="toggle-btn" data-mode="pages">Pages</button>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <svg id="lineChart" viewBox="0 0 600 200" preserveAspectRatio="none"></svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recent Activity</div>
+        <div class="card-sub" style="margin-bottom:0">Your latest actions</div>
+        <div class="activity-list" id="activityList"></div>
+      </div>
+    </div> -->
+
+    <!-- MONTHLY BOOKS + GENRE BREAKDOWN -->
+    <!-- <div class="two-col" style="margin-bottom:20px">
+      <div class="card">
+        <div class="monthly-header">
+          <div>
+            <div class="card-title">Monthly Books</div>
+            <div class="card-sub">Books completed per month</div>
+          </div>
+          <div class="monthly-delta">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+            +18%
+          </div>
+        </div>
+        <div class="bar-chart-wrap" id="barChart"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Genre Breakdown</div>
+        <div class="card-sub">Your reading diversity</div>
+        <div class="genre-list" id="genreList"></div>
+      </div>
+    </div> -->
+
+    <!-- STREAK BANNER -->
+    <!-- <div class="streak-banner">
+      <div class="streak-bolt">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <div class="streak-text">
+        <div class="streak-title">14 Day Streak! 🔥</div>
+        <div class="streak-sub">Keep it going — you're on fire!</div>
+      </div>
+      <div class="streak-days" id="streakDays"></div>
+    </div>
+
+  </main>
+</div>
+ -->
+<!-- BOTTOM NAV -->
+<!-- <nav class="bottom-nav">
+  <div class="bottom-nav-items">
+    <a class="bottom-nav-item" href="dashpage.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Home
+    </a>
+    <a class="bottom-nav-item" href="lib1.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      Library
+    </a>
+    <a class="bottom-nav-item" href="#">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Collections
+    </a>
+    <a class="bottom-nav-item active" href="#">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Analytics
+    </a>
+    <a class="bottom-nav-item" href="#">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Settings
+    </a>
+  </div>
+</nav>
+<script src="https://kit.fontawesome.com/4318880fa2.js" crossorigin="anonymous"></script>
+<script> -->
+<!-- /* ═══════ SIDEBAR ═══════ */ -->
+<!-- const sidebar   = document.getElementById('sidebar');
+const mainEl    = document.getElementById('main');
+const overlay   = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+
+function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+
+hamburger.addEventListener('click', openSidebar);
+overlay.addEventListener('click', closeSidebar);
+window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
+
+let collapsed = false;
+document.getElementById('collapseBtn').addEventListener('click', e => {
+  e.preventDefault();
+  if (window.innerWidth <= 768) return;
+  collapsed = !collapsed;
+  sidebar.classList.toggle('collapsed', collapsed);
+  mainEl.style.marginLeft = collapsed ? '64px' : 'var(--sidebar-w)';
+  const icon = document.getElementById('collapseIcon');
+  icon.innerHTML = collapsed
+    ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>`
+    : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>`;
+}); -->
+
+<!-- /* ═══════ DATA ═══════ */ -->
+<!-- const weekHours = [1.5, 2.2, 1.8, 3.0, 1.0, 4.2, 2.8];
+const weekPages = [38, 55, 44, 72, 28, 102, 68];
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+const monthlyData = [
+  { m: 'Aug', v: 3 }, { m: 'Sep', v: 4 }, { m: 'Oct', v: 2 },
+  { m: 'Nov', v: 4 }, { m: 'Dec', v: 5 }, { m: 'Jan', v: 4 }, { m: 'Feb', v: 5 },
+];
+const maxMonthly = Math.max(...monthlyData.map(d => d.v));
+
+const genres = [
+  { name: 'Fiction',    count: 12, max: 12, color: '#f9a618' },
+  { name: 'Sci-Fi',     count: 8,  max: 12, color: '#1a2035' },
+  { name: 'Self-Help',  count: 7,  max: 12, color: '#22c55e' },
+  { name: 'Psychology', count: 6,  max: 12, color: '#a855f7' },
+  { name: 'History',    count: 5,  max: 12, color: '#ef4444' },
+  { name: 'Other',      count: 4,  max: 12, color: '#06b6d4' },
+];
+
+const activities = [
+  { icon: '📖', title: 'The Midnight Library', action: 'Read 24 pages', time: '2h ago' },
+  { icon: '🎉', title: 'Atomic Habits',        action: 'Finished!',     time: 'Yesterday' },
+  { icon: '📖', title: 'Project Hail Mary',    action: 'Read 18 pages', time: '2 days ago' },
+  { icon: '➕', title: 'Dune',                 action: 'Added to library', time: '3 days ago' },
+]; -->
+
+<!-- /* ═══════ LINE CHART ═══════ */ -->
+<!-- let chartMode = 'hours';
+
+function drawLineChart(data, labelSuffix) {
+  const svg = document.getElementById('lineChart');
+  const W = 600, H = 200, padL = 30, padB = 30, padT = 10, padR = 10;
+  const chartW = W - padL - padR;
+  const chartH = H - padB - padT;
+  const maxVal = Math.max(...data) * 1.15;
+  const minVal = 0;
+  const range = maxVal - minVal;
+
+  const pts = data.map((v, i) => ({
+    x: padL + (i / (data.length - 1)) * chartW,
+    y: padT + chartH - ((v - minVal) / range) * chartH,
+    v
+  }));
+
+  // Y grid lines
+  // const gridVals = [1, 2, 3, 4].map(v => v * (labelSuffix === 'h' ? 1 : 25));
+  // let gridHTML = gridVals.map(gv => {
+  //   const gy = padT + chartH - ((gv - minVal) / range) * chartH;
+  //   if (gy < padT || gy > padT + chartH) return '';
+  //   return `<line x1="${padL}" y1="${gy}" x2="${W - padR}" y2="${gy}" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,4"/>
+  //           <text x="${padL - 6}" y="${gy + 4}" fill="#9ca3af" font-size="11" text-anchor="end">${gv}${labelSuffix}</text>`;
+  // }).join('');
+
+  // Area fill path
+  // let areaPath = `M ${pts[0].x} ${padT + chartH}`;
+  // pts.forEach(p => areaPath += ` L ${p.x} ${p.y}`);
+  // areaPath += ` L ${pts[pts.length-1].x} ${padT + chartH} Z`;
+
+  // Line path (smooth with catmull-rom-like control points)
+  // let linePath = `M ${pts[0].x} ${pts[0].y}`;
+  // for (let i = 1; i < pts.length; i++) {
+  //   const cpx = (pts[i-1].x + pts[i].x) / 2;
+  //   linePath += ` C ${cpx} ${pts[i-1].y} ${cpx} ${pts[i].y} ${pts[i].x} ${pts[i].y}`;
+  // }
+
+  // // Dots + day labels
+  // let dotsHTML = pts.map((p, i) => `
+  //   <circle cx="${p.x}" cy="${p.y}" r="5" fill="#f9a618" stroke="white" stroke-width="2"/>
+  //   <text x="${p.x}" y="${H - 6}" fill="#9ca3af" font-size="11" text-anchor="middle">${days[i]}</text>
+  // `).join('');
+
+  // Gradient def
+//   svg.innerHTML = `
+//     <defs>
+//       <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+//         <stop offset="0%" stop-color="#f9a618" stop-opacity="0.25"/>
+//         <stop offset="100%" stop-color="#f9a618" stop-opacity="0.02"/>
+//       </linearGradient>
+//     </defs>
+//     ${gridHTML}
+//     <path d="${areaPath}" fill="url(#areaGrad)"/>
+//     <path d="${linePath}" fill="none" stroke="#f9a618" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+//     ${dotsHTML}
+//   `;
+// }
+// drawLineChart(weekHours, 'h');
+
+// document.querySelectorAll('.toggle-btn').forEach(btn => {
+//   btn.addEventListener('click', () => {
+//     chartMode = btn.dataset.mode;
+//     document.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === chartMode));
+//     drawLineChart(chartMode === 'hours' ? weekHours : weekPages, chartMode === 'hours' ? 'h' : 'p');
+//   });
+// }); -->
+
+<!-- /* ═══════ BAR CHART ═══════ */ -->
+<!-- // const barWrap = document.getElementById('barChart');
+// monthlyData.forEach((d, i) => {
+//   const isLast = i === monthlyData.length - 1;
+//   const pct = (d.v / maxMonthly) * 100;
+//   const col = document.createElement('div');
+//   col.className = 'bar-col';
+//   col.innerHTML = `
+//     <div class="bar-track">
+//       <div class="bar-fill ${isLast ? 'accent' : 'gray'}" style="height:0%" data-pct="${pct}"></div>
+//     </div>
+//     <span class="bar-label">${d.m}</span>`;
+//   barWrap.appendChild(col);
+// });
+// Animate bars in
+// setTimeout(() => {
+//   document.querySelectorAll('.bar-fill').forEach(b => {
+//     b.style.height = b.dataset.pct + '%';
+//   });
+// }, 100);
+ -->
+<!-- /* ═══════ GENRE LIST ═══════ */ -->
+<!-- // const genreListEl = document.getElementById('genreList');
+// genres.forEach(g => {
+//   const pct = (g.count / g.max) * 100;
+//   const row = document.createElement('div');
+//   row.className = 'genre-row-item';
+//   row.innerHTML = `
+//     <div class="genre-row-top">
+//       <span class="genre-name">${g.name}</span>
+//       <span class="genre-count">${g.count} books</span>
+//     </div>
+//     <div class="genre-bar-bg">
+//       <div class="genre-bar-fill" style="width:0%;background:${g.color}" data-w="${pct}"></div>
+//     </div>`;
+//   genreListEl.appendChild(row);
+// });
+// setTimeout(() => {
+//   document.querySelectorAll('.genre-bar-fill').forEach(b => {
+//     b.style.width = b.dataset.w + '%';
+//   });
+// }, 150);
+
+/* ═══════ RECENT ACTIVITY ═══════ */
+// const actList = document.getElementById('activityList');
+// const iconColors = ['#dbeafe','#fef9c3','#dbeafe','#ede9fe'];
+// activities.forEach((a, i) => {
+//   const item = document.createElement('div');
+//   item.className = 'activity-item';
+//   item.innerHTML = `
+//     <div class="activity-icon" style="background:${iconColors[i] || '#f3f4f6'}">${a.icon}</div>
+//     <div class="activity-info">
+//       <div class="activity-title">${a.title}</div>
+//       <div class="activity-action">${a.action}</div>
+//     </div>
+//     <div class="activity-time">${a.time}</div>`;
+//   actList.appendChild(item);
+// });
+ -->
+<!-- /* ═══════ STREAK DAYS ═══════ */
+// const streakEl = document.getElementById('streakDays');
+// const dayLabels = ['M','T','W','T','F','S','S'];
+// const doneDays = [true, true, true, true, true, true, false];
+// dayLabels.forEach((d, i) => {
+//   const div = document.createElement('div');
+//   div.className = 'streak-day' + (doneDays[i] ? ' done' : '');
+//   div.textContent = d;
+//   streakEl.appendChild(div);
+// });
+// </script> -->
+<!-- // </body>
+// </html>  -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Shelf - Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="analytic.css">
+</head>
+<body>1
+
+<!-- TOPBAR mobile -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div class="topbar-logo">
+    <div class="logo-icon"><i class="fa-solid fa-book-open" style="color: #f9a618;"></i></div>
+    <span class="topbar-title">Digital Shelf</span>
+  </div>
+</header>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-book-open" style="color: #f9a618;"></i></div>
+      <span>Digital Shelf</span>
+    </div>
+    <nav>
+      <a class="nav-item" href="dashpage.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" href="lib1.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span class="nav-label">Library</span>
+      </a>
+      <a class="nav-item" href="collection.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <span class="nav-label">Collections</span>
+      </a>
+      <a class="nav-item active" href="analytics.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span class="nav-label">Analytics</span>
+      </a>
+      <a class="nav-item" href="setting.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a class="nav-item" href="#" id="collapseBtn">
+        <svg id="collapseIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+        </svg>
+        <span class="nav-label">Collapse</span>
+      </a>
+      <a class="nav-item" href="#" id="logoutBtn">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <span class="nav-label">Log out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main">
+
+    <!-- HERO CARD -->
+    <div class="hero-card">
+      <div class="hero-label">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+        YOUR READING JOURNEY
+      </div>
+      <div class="hero-pages" id="heroPages">—</div>
+      <div class="hero-sub" id="heroSub">Loading your stats...</div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon"><i class="fa-solid fa-fire" style="color:#f9a618"></i></span>
+            <span class="stat-delta" id="streakDelta">—</span>
+          </div>
+          <div class="stat-val" id="statStreak">—</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon"><i class="fa-solid fa-bullseye" style="color: #f9a618;"></i></span>
+            <span class="stat-delta" id="completionDelta">—</span>
+          </div>
+          <div class="stat-val" id="statCompletion">—</div>
+          <div class="stat-label">Completion</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon"><i class="fa-solid fa-book-open" style="color:#f9a618;"></i></span>
+            <span class="stat-delta" style="color:rgba(255,255,255,0.3)">—</span>
+          </div>
+          <div class="stat-val" id="statInProgress">—</div>
+          <div class="stat-label">In Progress</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon"><i class="fa-regular fa-clock" style="color: #f9a618;"></i></span>
+            <span class="stat-delta" style="color:rgba(255,255,255,0.3)">—</span>
+          </div>
+          <div class="stat-val" id="statFinished">—</div>
+          <div class="stat-label">Completed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THIS WEEK + RECENT ACTIVITY -->
+    <div class="two-col">
+      <div class="card">
+        <div class="week-header">
+          <div>
+            <div class="card-title">This Week</div>
+            <div class="card-sub" id="weekSubtitle">Loading...</div>
+          </div>
+          <div class="toggle-btns">
+            <button class="toggle-btn active" data-mode="pages">Pages</button>
+            <button class="toggle-btn" data-mode="books">Books</button>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <svg id="lineChart" viewBox="0 0 600 200" preserveAspectRatio="none"></svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recent Activity</div>
+        <div class="card-sub" style="margin-bottom:0">Your latest reading</div>
+        <div class="activity-list" id="activityList">
+          <div style="padding:20px 0;color:#9ca3af;font-size:14px;">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTHLY BOOKS + GENRE BREAKDOWN -->
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="card">
+        <div class="monthly-header">
+          <div>
+            <div class="card-title">Monthly Books</div>
+            <div class="card-sub">Books added per month</div>
+          </div>
+          <div class="monthly-delta" id="monthlyDelta">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+            —
+          </div>
+        </div>
+        <div class="bar-chart-wrap" id="barChart"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Genre Breakdown</div>
+        <div class="card-sub">Your reading diversity</div>
+        <div class="genre-list" id="genreList"></div>
+      </div>
+    </div>
+
+    <!-- STREAK BANNER -->
+    <div class="streak-banner" id="streakBanner">
+      <div class="streak-bolt">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <div class="streak-text">
+        <div class="streak-title" id="streakTitle">Loading streak...</div>
+        <div class="streak-sub" id="streakSub">Hang tight!</div>
+      </div>
+      <div class="streak-days" id="streakDays"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-items">
+    <a class="bottom-nav-item" href="dashpage.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Home
+    </a>
+    <a class="bottom-nav-item" href="lib1.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      Library
+    </a>
+    <a class="bottom-nav-item" href="collection.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Collections
+    </a>
+    <a class="bottom-nav-item active" href="analytics.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Analytics
+    </a>
+    <a class="bottom-nav-item" href="setting.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Settings
+    </a>
+  </div>
+</nav>
+
+<script src="https://kit.fontawesome.com/4318880fa2.js" crossorigin="anonymous"></script>
+
+<script type="module">
+import { supabase } from './supabase.js'
+
+// ═══ AUTH ═══
+const { data: { session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const userId = session.user.id
+
+// ═══ LOGOUT ═══
+document.getElementById('logoutBtn').addEventListener('click', async e => {
+  e.preventDefault()
+  await supabase.auth.signOut()
+  window.location.href = 'index.html'
+})
+
+// ═══ SIDEBAR ═══
+const sidebar   = document.getElementById('sidebar')
+const mainEl    = document.getElementById('main')
+const overlay   = document.getElementById('overlay')
+const hamburger = document.getElementById('hamburger')
+
+function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden' }
+function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = '' }
+
+hamburger.addEventListener('click',openSidebar)
+overlay.addEventListener('click', closeSidebar)
+window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar() })
+
+let collapsed = false
+document.getElementById('collapseBtn').addEventListener('click', e => {
+  e.preventDefault()
+  if (window.innerWidth <= 768) return
+  collapsed = !collapsed
+  sidebar.classList.toggle('collapsed', collapsed)
+  mainEl.style.marginLeft = collapsed ? '64px' : 'var(--sidebar-w)'
+  const icon = document.getElementById('collapseIcon')
+  icon.innerHTML = collapsed
+    ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>`
+    : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>`
+})
+
+// ═══ FETCH ALL DATA ═══
+const [
+  { data: books },
+  { data: progress },
+] = await Promise.all([
+  supabase.from('books').select('*').eq('user_id', userId),
+  supabase.from('reading_progress').select('*').eq('user_id', userId),
+])
+
+const allBooks = books || []
+const allProgress = progress || []
+ 
+// ═══ COMPUTE HERO STATS ═══
+const totalPages = allProgress.reduce((sum, p) => sum + (p.current_page || 0), 0)
+const totalBooks = allBooks.length
+const completedBooks = allProgress.filter(p => p.percent_complete >= 100).length
+const inProgressBooks = allProgress.filter(p => p.percent_complete > 0 && p.percent_complete < 100).length
+const avgCompletion = allProgress.length
+  ? Math.round(allProgress.reduce((s, p) => s + (p.percent_complete || 0), 0) / allProgress.length)
+  : 0
+
+document.getElementById('heroPages').textContent = totalPages.toLocaleString() + ' pages'
+document.getElementById('heroSub').textContent = `across ${totalBooks} book${totalBooks !== 1 ? 's' : ''} in your library`
+document.getElementById('statCompletion').textContent = avgCompletion + '%'
+document.getElementById('completionDelta').textContent = avgCompletion >= 50 ? '▲ Good' : '▼ Keep going'
+document.getElementById('completionDelta').style.color = avgCompletion >= 50 ? '#4ade80' : '#f87171'
+document.getElementById('statInProgress').textContent = inProgressBooks
+document.getElementById('statFinished').textContent = completedBooks
+
+// ═══ STREAK CALCULATION ═══
+// Count consecutive days with reading_progress updated
+const readDates = allProgress
+  .map(p => p.last_read_at ? new Date(p.last_read_at).toDateString() : null)
+  .filter(Boolean)
+const uniqueDates = [...new Set(readDates)].map(d => new Date(d)).sort((a, b) => b - a)
+
+let streak = 0
+const today = new Date()
+today.setHours(0,0,0,0)
+for (let i = 0; i < uniqueDates.length; i++) {
+  const d = new Date(uniqueDates[i])
+  d.setHours(0,0,0,0)
+  const diff = Math.round((today - d) / (1000 * 60 * 60 * 24))
+  if (diff === i || diff === i + 1) streak++
+  else break
+}
+
+document.getElementById('statStreak').textContent = streak
+document.getElementById('streakDelta').textContent = streak > 0 ? '🔥 Active' : '—'
+document.getElementById('streakDelta').style.color = streak > 0 ? '#4ade80' : 'rgba(255,255,255,0.3)'
+document.getElementById('streakTitle').textContent = streak > 0 ? `${streak} Day Streak! 🔥` : 'No streak yet'
+document.getElementById('streakSub').textContent = streak > 0
+  ? streak >= 7 ? 'Amazing — keep it going!' : 'Keep reading every day!'
+  : 'Read today to start your streak!'
+
+// Streak days (last 7 days)
+const streakEl = document.getElementById('streakDays')
+const dayLabels = ['M','T','W','T','F','S','S']
+const last7 = []
+for (let i = 6; i >= 0; i--) {
+  const d = new Date()
+  d.setDate(d.getDate() - i)
+  d.setHours(0,0,0,0)
+  last7.push(d.toDateString())
+}
+last7.forEach((dateStr, idx) => {
+  const done = uniqueDates.some(d => d.toDateString() === dateStr)
+  const div = document.createElement('div')
+  div.className = 'streak-day' + (done ? ' done' : '')
+  div.textContent = dayLabels[idx]
+  streakEl.appendChild(div)
+})
+
+// ═══ THIS WEEK LINE CHART ═══
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+const weekPages = Array(7).fill(0)
+const weekBooks = Array(7).fill(0)
+
+// Map books added this week
+allBooks.forEach(b => {
+  const d = new Date(b.created_at)
+  const today = new Date()
+  const startOfWeek = new Date(today)
+  startOfWeek.setDate(today.getDate() - today.getDay() + 1) // Monday
+  startOfWeek.setHours(0,0,0,0)
+  if (d >= startOfWeek) {
+    let dow = d.getDay() - 1 // 0=Mon
+    if (dow < 0) dow = 6
+    weekBooks[dow]++
+  }
+})
+
+// Map pages read this week (from last_read_at)
+allProgress.forEach(p => {
+  if (!p.last_read_at) return
+  const d = new Date(p.last_read_at)
+  const today = new Date()
+  const startOfWeek = new Date(today)
+  startOfWeek.setDate(today.getDate() - today.getDay() + 1)
+  startOfWeek.setHours(0,0,0,0)
+  if (d >= startOfWeek) {
+    let dow = d.getDay() - 1
+    if (dow < 0) dow = 6
+    weekPages[dow] += p.current_page || 0
+  }
+})
+
+let chartMode = 'pages'
+const totalWeekPages = weekPages.reduce((a,b) => a+b, 0)
+document.getElementById('weekSubtitle').textContent = `${totalWeekPages} pages this week`
+
+function drawLineChart(data, labelSuffix) {
+  const svg = document.getElementById('lineChart')
+  const W = 600, H = 200, padL = 36, padB = 30, padT = 10, padR = 10
+  const chartW = W - padL - padR
+  const chartH = H - padB - padT
+  const maxVal = Math.max(...data, 1) * 1.15
+  const minVal = 0
+  const range = maxVal - minVal
+
+  const pts = data.map((v, i) => ({
+    x: padL + (i / (data.length - 1)) * chartW,
+    y: padT + chartH - ((v - minVal) / range) * chartH,
+    v
+  }))
+
+  const gridCount = 4
+  let gridHTML = ''
+  for (let g = 1; g <= gridCount; g++) {
+    const gv = Math.round((maxVal / gridCount) * g)
+    const gy = padT + chartH - ((gv - minVal) / range) * chartH
+    if (gy < padT || gy > padT + chartH) continue
+    gridHTML += `<line x1="${padL}" y1="${gy}" x2="${W - padR}" y2="${gy}" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,4"/>
+                 <text x="${padL - 6}" y="${gy + 4}" fill="#9ca3af" font-size="11" text-anchor="end">${gv}${labelSuffix}</text>`
+  }
+
+  let areaPath = `M ${pts[0].x} ${padT + chartH}`
+  pts.forEach(p => areaPath += ` L ${p.x} ${p.y}`)
+  areaPath += ` L ${pts[pts.length-1].x} ${padT + chartH} Z`
+
+  let linePath = `M ${pts[0].x} ${pts[0].y}`
+  for (let i = 1; i < pts.length; i++) {
+    const cpx = (pts[i-1].x + pts[i].x) / 2
+    linePath += ` C ${cpx} ${pts[i-1].y} ${cpx} ${pts[i].y} ${pts[i].x} ${pts[i].y}`
+  }
+
+  const dotsHTML = pts.map((p, i) => `
+    <circle cx="${p.x}" cy="${p.y}" r="5" fill="#f9a618" stroke="white" stroke-width="2"/>
+    <text x="${p.x}" y="${H - 6}" fill="#9ca3af" font-size="11" text-anchor="middle">${days[i]}</text>
+  `).join('')
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#f9a618" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="#f9a618" stop-opacity="0.02"/>
+      </linearGradient>
+    </defs>
+    ${gridHTML}
+    <path d="${areaPath}" fill="url(#areaGrad)"/>
+    <path d="${linePath}" fill="none" stroke="#f9a618" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dotsHTML}
+  `
+}
+drawLineChart(weekPages, 'p')
+
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    chartMode = btn.dataset.mode
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === chartMode))
+    if (chartMode === 'pages') {
+      drawLineChart(weekPages, 'p')
+      document.getElementById('weekSubtitle').textContent = `${totalWeekPages} pages this week`
+    } else {
+      drawLineChart(weekBooks, ' books')
+      document.getElementById('weekSubtitle').textContent = `${weekBooks.reduce((a,b)=>a+b,0)} books added this week`
+    }
+  })
+})
+
+// ═══ MONTHLY BAR CHART ═══
+const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+const monthCounts = {}
+allBooks.forEach(b => {
+  const d = new Date(b.created_at)
+  const key = `${d.getFullYear()}-${d.getMonth()}`
+  monthCounts[key] = (monthCounts[key] || 0) + 1
+})
+
+// Last 7 months
+const monthlyData = []
+for (let i = 6; i >= 0; i--) {
+  const d = new Date()
+  d.setMonth(d.getMonth() - i)
+  const key = `${d.getFullYear()}-${d.getMonth()}`
+  monthlyData.push({ m: monthNames[d.getMonth()], v: monthCounts[key] || 0 })
+}
+
+const maxMonthly = Math.max(...monthlyData.map(d => d.v), 1)
+const lastMonth = monthlyData[monthlyData.length - 2]?.v || 0
+const thisMonth = monthlyData[monthlyData.length - 1]?.v || 0
+const monthDeltaPct = lastMonth > 0 ? Math.round(((thisMonth - lastMonth) / lastMonth) * 100) : 0
+document.getElementById('monthlyDelta').innerHTML = `
+  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="${monthDeltaPct >= 0 ? 'M5 10l7-7m0 0l7 7m-7-7v18' : 'M19 14l-7 7m0 0l-7-7m7 7V3'}"/>
+  </svg>
+  ${monthDeltaPct >= 0 ? '+' : ''}${monthDeltaPct}%`
+
+const barWrap = document.getElementById('barChart')
+monthlyData.forEach((d, i) => {
+  const isLast = i === monthlyData.length - 1
+  const pct = (d.v / maxMonthly) * 100
+  const col = document.createElement('div')
+  col.className = 'bar-col'
+  col.innerHTML = `
+    <div class="bar-track">
+      <div class="bar-fill ${isLast ? 'accent' : 'gray'}" style="height:0%" data-pct="${pct}"></div>
+    </div>
+    <span class="bar-label">${d.m}</span>`
+  barWrap.appendChild(col)
+})
+setTimeout(() => {
+  document.querySelectorAll('.bar-fill').forEach(b => { b.style.height = b.dataset.pct + '%' })
+}, 100)
+
+// ═══ GENRE BREAKDOWN ═══
+const genreColors = ['#f9a618','#1a2035','#22c55e','#a855f7','#ef4444','#06b6d4','#f43f5e','#0ea5e9']
+const genreCounts = {}
+allBooks.forEach(b => {
+  if (b.genre) genreCounts[b.genre] = (genreCounts[b.genre] || 0) + 1
+})
+
+const sortedGenres = Object.entries(genreCounts)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 6)
+
+const maxGenre = sortedGenres[0]?.[1] || 1
+const genreListEl = document.getElementById('genreList')
+
+if (sortedGenres.length === 0) {
+  genreListEl.innerHTML = '<p style="color:#9ca3af;font-size:14px;margin-top:16px;">No genre data yet. Add genres to your books!</p>'
+} else {
+  sortedGenres.forEach(([name, count], i) => {
+    const pct = (count / maxGenre) * 100
+    const row = document.createElement('div')
+    row.className = 'genre-row-item'
+    row.innerHTML = `
+      <div class="genre-row-top">
+        <span class="genre-name">${name}</span>
+        <span class="genre-count">${count} book${count !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="genre-bar-bg">
+        <div class="genre-bar-fill" style="width:0%;background:${genreColors[i % genreColors.length]}" data-w="${pct}"></div>
+      </div>`
+    genreListEl.appendChild(row)
+  })
+  setTimeout(() => {
+    document.querySelectorAll('.genre-bar-fill').forEach(b => { b.style.width = b.dataset.w + '%' })
+  }, 150)
+}
+
+// ═══ RECENT ACTIVITY ═══
+const actList = document.getElementById('activityList')
+const iconColors = ['#dbeafe','#fef9c3','#dcfce7','#ede9fe','#fee2e2']
+
+// Get recently read books sorted by last_read_at
+const recentProgress = [...allProgress]
+  .filter(p => p.last_read_at)
+  .sort((a, b) => new Date(b.last_read_at) - new Date(a.last_read_at))
+  .slice(0, 5)
+
+if (recentProgress.length === 0) {
+  actList.innerHTML = '<div style="padding:20px 0;color:#9ca3af;font-size:14px;">No activity yet. Start reading!</div>'
+} else {
+  actList.innerHTML = ''
+  recentProgress.forEach((p, i) => {
+    const book = allBooks.find(b => b.id === p.book_id)
+    if (!book) return
+
+    const timeAgo = getTimeAgo(new Date(p.last_read_at))
+    const action = p.percent_complete >= 100
+      ? 'Finished! 🎉'
+      : `Read to page ${p.current_page || 0} (${p.percent_complete || 0}%)`
+
+    const item = document.createElement('div')
+    item.className = 'activity-item'
+    item.innerHTML = `
+      <div class="activity-icon" style="background:${iconColors[i % iconColors.length]}">
+        ${p.percent_complete >= 100 ? '🎉' : '📖'}
+      </div>
+      <div class="activity-info">
+        <div class="activity-title">${book.title}</div>
+        <div class="activity-action">${action}</div>
+      </div>
+      <div class="activity-time">${timeAgo}</div>`
+    actList.appendChild(item)
+  })
+}
+
+function getTimeAgo(date) {
+  const seconds = Math.floor((new Date() - date) / 1000)
+  if (seconds < 60) return 'Just now'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days === 1) return 'Yesterday'
+  if (days < 7) return `${days} days ago`
+  return date.toLocaleDateString()
+}
+</script>
+</body>
+</html>

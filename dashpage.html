@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Shelf - Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styledash.css">
+</head>
+<body>
+
+<!-- MOBILE TOPBAR -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+  <div class="logo-icon"><i class="fa-solid fa-book-open" style="color:#f9a618"></i></div>
+  <span class="topbar-title">Digital Shelf</span>
+</header>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fa-solid fa-book-open" style="color:#f9a618"></i></div>
+    <span>Digital Shelf</span>
+  </div>
+  <nav>
+    <a class="nav-item active" href="dashpage.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </a>
+    <a class="nav-item" href="lib1.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      <span class="nav-label">Library</span>
+    </a>
+    <a class="nav-item" href="collection.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      <span class="nav-label">Collections</span>
+    </a>
+    <a class="nav-item" href="analytics.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <span class="nav-label">Analytics</span>
+    </a>
+    <a class="nav-item" href="setting.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span class="nav-label">Settings</span>
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <a class="nav-item" href="#" id="collapseBtn">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+      <span class="nav-label">Collapse</span>
+    </a>
+    <a class="nav-item" href="#" id="logoutBtn">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      <span class="nav-label">Log out</span>
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main" id="main">
+  <h1 style="font-family:'Times New Roman',Times,serif;">Welcome back, Reader</h1>
+  <h5>Here's what's happening with your library</h5>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="logo"><i class="fa-solid fa-book-open" style="color:rgb(247,249,253)"></i></div>
+      <div class="stat-num">0</div><div class="stat-label">Completed</div>
+    </div>
+    <div class="stat-card">
+      <div class="logo2"><i class="fa-solid fa-book-bookmark" style="color:rgb(247,249,253)"></i></div>
+      <div class="stat-num">0</div><div class="stat-label">Hours Read</div>
+    </div>
+    <div class="stat-card">
+      <div class="logo"><i class="fa-regular fa-clock" style="color:rgb(247,249,253)"></i></div>
+      <div class="stat-num">0</div><div class="stat-label">In Progress</div>
+    </div>
+    <div class="stat-card">
+      <div class="logo2"><i class="fa-solid fa-fire" style="color:rgb(247,249,253)"></i></div>
+      <div class="stat-num">0</div><div class="stat-label">Total Books</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title" id="barChartTitle">Books Added per Month</div>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Genres</div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" viewBox="0 0 100 100" id="donutSvg"></svg>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Continue Reading</div>
+  <div class="books-grid" id="booksGrid"></div>
+</main>
+
+<script src="https://kit.fontawesome.com/4318880fa2.js" crossorigin="anonymous"></script>
+
+<!-- SIDEBAR SCRIPT — CSS classes only, zero inline styles -->
+<script>
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('overlay');
+  const hamburger = document.getElementById('hamburger');
+
+  // MOBILE: toggle .is-open class — CSS handles transform
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.add('is-open');
+    overlay.classList.add('show');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('is-open');
+    overlay.classList.remove('show');
+  });
+
+  // DESKTOP: toggle .is-collapsed class — CSS handles width + sibling margin
+  document.getElementById('collapseBtn').addEventListener('click', e => {
+    e.preventDefault();
+    if (window.innerWidth <= 768) return; // no collapse on mobile
+    sidebar.classList.toggle('is-collapsed');
+  });
+
+  // On resize to mobile: remove is-collapsed so desktop state doesn't leak in
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 768) {
+      sidebar.classList.remove('is-collapsed');
+      sidebar.classList.remove('is-open');
+      overlay.classList.remove('show');
+    }
+  });
+</script>
+
+<!-- SUPABASE + DATA SCRIPT -->
+<script type="module">
+  import { supabase } from './supabase.js'
+
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) { window.location.href = 'index.html' }
+
+  const userId = session.user.id
+  const name = session.user.user_metadata?.name || 'Reader'
+  document.querySelector('.main h1').textContent = 'Welcome back, ' + name + '!'
+
+  document.getElementById('logoutBtn').addEventListener('click', async e => {
+    e.preventDefault()
+    await supabase.auth.signOut()
+    window.location.href = 'index.html'
+  })
+
+  const { data: books }    = await supabase.from('books').select('*').order('created_at', { ascending: false })
+  const { data: progress } = await supabase.from('reading_progress').select('*').eq('user_id', userId)
+  const { data: sessions } = await supabase.from('reading_sessions').select('*').eq('user_id', userId)
+
+  // Stats
+  const completedBooks = progress?.filter(p => p.percent_complete === 100).length || 0
+  const totalMinutes   = sessions?.reduce((sum, s) => sum + s.duration_minutes, 0) || 0
+  const totalHours     = Math.round(totalMinutes / 60)
+  const inProgress     = progress?.filter(p => p.percent_complete > 0 && p.percent_complete < 100).length || 0
+  const totalBooks     = books?.length || 0
+
+  const statNums   = document.querySelectorAll('.stat-num')
+  const statLabels = document.querySelectorAll('.stat-label')
+  statNums[0].textContent  = completedBooks;  statLabels[0].textContent = 'Completed'
+  statNums[1].textContent  = totalHours;      statLabels[1].textContent = 'Hours Read'
+  statNums[2].textContent  = inProgress;      statLabels[2].textContent = 'In Progress'
+  statNums[3].textContent  = totalBooks;      statLabels[3].textContent = 'Total Books'
+
+  // Donut chart
+  const genreCounts = {}
+  books?.forEach(b => { genreCounts[b.genre] = (genreCounts[b.genre] || 0) + 1 })
+
+  const palette = ['#f9a618','#3b82f6','#10b981','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16']
+  const total   = books?.length || 1
+  const svg     = document.getElementById('donutSvg')
+  const legend  = document.getElementById('donutLegend')
+  svg.innerHTML = ''; legend.innerHTML = ''
+
+  const r = 38, cx = 50, cy = 50, strokeW = 16
+  const circ = 2 * Math.PI * r
+  let offset = 0
+
+  Object.entries(genreCounts).forEach(([genre, count], i) => {
+    const pct   = (count / total) * 100
+    const color = palette[i % palette.length]
+    const dash  = (pct / 100) * circ
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+    c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r)
+    c.setAttribute('fill', 'none'); c.setAttribute('stroke', color)
+    c.setAttribute('stroke-width', strokeW)
+    c.setAttribute('stroke-dasharray', `${dash - 2} ${circ - dash + 2}`)
+    c.setAttribute('stroke-dashoffset', -offset)
+    c.setAttribute('transform', `rotate(-90 ${cx} ${cy})`)
+    c.style.cursor = 'pointer'
+    c.addEventListener('mouseenter', () => c.setAttribute('opacity','0.75'))
+    c.addEventListener('mouseleave', () => c.setAttribute('opacity','1'))
+    svg.appendChild(c)
+    offset += dash
+
+    const item = document.createElement('div')
+    item.className = 'legend-item'
+    item.innerHTML = `<div class="legend-dot" style="background:${color}"></div>${genre}`
+    legend.appendChild(item)
+  })
+
+  // Bar chart — sessions if available, else books added per month
+  const monthNames    = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const monthlyCounts = {}
+  const hasSessionData = sessions && sessions.length > 0
+
+  if (hasSessionData) {
+    sessions.forEach(s => {
+      const m = new Date(s.date).getMonth()
+      monthlyCounts[m] = (monthlyCounts[m] || 0) + 1
+    })
+    document.getElementById('barChartTitle').textContent = 'Books Read per Month'
+  } else {
+    books?.forEach(b => {
+      const m = new Date(b.created_at).getMonth()
+      monthlyCounts[m] = (monthlyCounts[m] || 0) + 1
+    })
+    document.getElementById('barChartTitle').textContent = 'Books Added per Month'
+  }
+
+  const now  = new Date()
+  const last7 = []
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    last7.push({ month: d.getMonth(), label: monthNames[d.getMonth()] })
+  }
+
+  const barEl  = document.getElementById('barChart')
+  barEl.innerHTML = ''
+  const maxVal = Math.max(...last7.map(m => monthlyCounts[m.month] || 0), 1)
+
+  last7.forEach(m => {
+    const val = monthlyCounts[m.month] || 0
+    const h   = Math.round((val / maxVal) * 100)
+    const wrap = document.createElement('div')
+    wrap.className = 'bar-wrap'
+    wrap.innerHTML = `<div class="bar" style="height:${h}px" title="${val}"></div><div class="bar-label">${m.label}</div>`
+    barEl.appendChild(wrap)
+  })
+
+  // Continue reading
+  const grid = document.getElementById('booksGrid')
+  grid.innerHTML = ''
+
+  const inProgressBooks = books?.filter(b => {
+    const p = progress?.find(p => p.book_id === b.id)
+    return p && p.percent_complete > 0 && p.percent_complete < 100
+  }) || []
+
+  if (inProgressBooks.length === 0) {
+    grid.innerHTML = '<p style="color:#6b7280;font-size:14px;">No books in progress yet. Add some books to get started!</p>'
+  } else {
+    inProgressBooks.forEach(b => {
+      const p   = progress?.find(p => p.book_id === b.id)
+      const pct = p?.percent_complete || 0
+      const card = document.createElement('div')
+      card.className = 'book-card'
+      card.innerHTML = `
+        <div class="book-img-wrap">
+          <img src="${b.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80'}" alt="${b.title}" loading="lazy">
+          <span class="book-badge">${b.format?.toUpperCase() || 'EPUB'}</span>
+        </div>
+        <div class="book-info">
+          <div class="book-title">${b.title}</div>
+          <div class="book-author">${b.author}</div>
+          <div style="margin-top:8px;background:#e5e7eb;border-radius:999px;height:4px;">
+            <div style="width:${pct}%;background:#f9a618;height:4px;border-radius:999px;"></div>
+          </div>
+          <div style="font-size:11px;color:#6b7280;margin-top:4px;">${pct}% complete</div>
+        </div>`
+      grid.appendChild(card)
+    })
+  }
+</script>
+
+</body>
+</html>

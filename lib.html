@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Shelf - Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lib.css">
+</head>
+<body>
+
+<!-- TOPBAR -->
+<!-- FIX 1: Closed topbar-logo div properly and moved topbar-title INSIDE it -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+  <div class="topbar-logo">
+    <div class="logo-icon"><i class="fa-solid fa-book-open" style="color: #f9a618;"></i></div>
+    <span class="topbar-title">Digital Shelf</span>
+  </div>
+</header>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-book-open" style="color: #f9a618;"></i></div>
+      <span>Digital Shelf</span>
+    </div>
+    <nav>
+      <!-- FIX 3: Removed data-page from real links so e.preventDefault() won't block navigation -->
+      <a class="nav-item" href="dashpage.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item active" href="#" data-page="library">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span class="nav-label">Library</span>
+      </a>
+      <a class="nav-item" href="#" data-page="collections">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <span class="nav-label">Collections</span>
+      </a>
+      <a class="nav-item" href="dashpage.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span class="nav-label">Analytics</span>
+      </a>
+      <a class="nav-item" href="#" data-page="settings">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a class="nav-item" href="#" id="collapseBtn">
+        <svg id="collapseIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+        </svg>
+        <span class="nav-label">Collapse</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <span class="nav-label">Log out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Library</h1>
+      <button class="add-book-btn" id="addBookBtn">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+        Add Book
+      </button>
+    </div>
+
+    <!-- Search + Sort -->
+    <div class="search-sort-row">
+      <div class="search-wrap">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input class="search-input" type="text" id="searchInput" placeholder="Search by title, author, or tag...">
+      </div>
+      <div class="sort-btns">
+        <button class="sort-btn active" data-sort="rating">Rating</button>
+        <button class="sort-btn" data-sort="newest">Newest</button>
+        <button class="sort-btn" data-sort="title">Title</button>
+      </div>
+    </div>
+
+    <!-- Genre Filters -->
+    <div class="genre-row" id="genreRow"></div>
+
+    <!-- Books Grid -->
+    <div class="books-grid" id="booksGrid"></div>
+
+  </main>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-items">
+    <!-- FIX 3: Real links have no data-page, so they navigate freely -->
+    <a class="bottom-nav-item" href="dashpage.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Home
+    </a>
+    <a class="bottom-nav-item active" href="#" data-page="library">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      Library
+    </a>
+    <a class="bottom-nav-item" href="#" data-page="collections">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Collections
+    </a>
+    <a class="bottom-nav-item" href="dashpage.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Analytics
+    </a>
+    <a class="bottom-nav-item" href="#" data-page="settings">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Settings
+    </a>
+  </div>
+</nav>
+
+<script src="https://kit.fontawesome.com/4318880fa2.js" crossorigin="anonymous"></script>
+
+<script>
+/* ════════════════════════════
+   DATA
+════════════════════════════ */
+const allBooks = [
+  { title: 'Dune',                     author: 'Frank Herbert',    rating: 4.9, reviews: 8923,  type: 'PDF',  status: null,        genre: 'Science Fiction',    img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80', added: 1  },
+  { title: 'Atomic Habits',            author: 'James Clear',      rating: 4.8, reviews: 5120,  type: 'PDF',  status: 'completed', genre: 'Self-Help',          img: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80', added: 2  },
+  { title: 'Project Hail Mary',        author: 'Andy Weir',        rating: 4.7, reviews: 3201,  type: 'EPUB', status: null,        genre: 'Science Fiction',    img: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80', added: 3  },
+  { title: 'The Psychology of Money',  author: 'Morgan Housel',    rating: 4.6, reviews: 4089,  type: 'PDF',  status: null,        genre: 'Finance',            img: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80', added: 4  },
+  { title: 'The Midnight Library',     author: 'Matt Haig',        rating: 4.5, reviews: 2847,  type: 'EPUB', status: 'completed', genre: 'Fiction',            img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80', added: 5  },
+  { title: 'Sapiens',                  author: 'Yuval Noah Harari',rating: 4.7, reviews: 12540, type: 'PDF',  status: 'reading',   genre: 'Historical Fiction', img: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80', added: 6  },
+  { title: 'Klara and the Sun',        author: 'Kazuo Ishiguro',   rating: 4.2, reviews: 1876,  type: 'EPUB', status: null,        genre: 'Literary Fiction',   img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80', added: 7  },
+  { title: 'Thinking, Fast and Slow',  author: 'Daniel Kahneman',  rating: 4.3, reviews: 6710,  type: 'PDF',  status: null,        genre: 'Psychology',         img: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80', added: 8  },
+  { title: 'The Alchemist',            author: 'Paulo Coelho',     rating: 4.4, reviews: 9320,  type: 'EPUB', status: 'completed', genre: 'Fiction',            img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', added: 9  },
+  { title: 'Rich Dad Poor Dad',        author: 'Robert Kiyosaki',  rating: 4.1, reviews: 7810,  type: 'PDF',  status: 'reading',   genre: 'Finance',            img: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=400&q=80', added: 10 },
+];
+
+const genres = ['All','Fiction','Science Fiction','Self-Help','Finance','Literary Fiction','Historical Fiction','Psychology'];
+
+/* ════════════════════════════
+   STATE
+════════════════════════════ */
+let activeGenre = 'All';
+let activeSort  = 'rating';
+let searchQuery = '';
+
+/* ════════════════════════════
+   RENDER GENRES
+════════════════════════════ */
+const genreRow = document.getElementById('genreRow');
+genres.forEach(g => {
+  const btn = document.createElement('button');
+  btn.className = 'genre-btn' + (g === 'All' ? ' active' : '');
+  btn.textContent = g;
+  btn.addEventListener('click', () => {
+    activeGenre = g;
+    document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderBooks();
+  });
+  genreRow.appendChild(btn);
+});
+
+/* ════════════════════════════
+   RENDER BOOKS
+════════════════════════════ */
+function renderBooks() {
+  const grid = document.getElementById('booksGrid');
+  let books = [...allBooks];
+
+  if (activeGenre !== 'All') books = books.filter(b => b.genre === activeGenre);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    books = books.filter(b =>
+      b.title.toLowerCase().includes(q) ||
+      b.author.toLowerCase().includes(q) ||
+      b.genre.toLowerCase().includes(q)
+    );
+  }
+
+  if (activeSort === 'rating') books.sort((a, b) => b.rating - a.rating);
+  else if (activeSort === 'newest') books.sort((a, b) => b.added - a.added);
+  else if (activeSort === 'title') books.sort((a, b) => a.title.localeCompare(b.title));
+
+  grid.innerHTML = '';
+
+  if (books.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:60px 0;font-size:15px;">No books found</div>`;
+    return;
+  }
+
+  books.forEach(b => {
+    const statusBadge = b.status
+      ? `<span class="badge-status ${b.status}">${b.status.charAt(0).toUpperCase() + b.status.slice(1)}</span>`
+      : '';
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    card.innerHTML = `
+      <div class="book-img-wrap">
+        <img src="${b.img}" alt="${b.title}" loading="lazy">
+        <span class="badge-format">${b.type}</span>
+        ${statusBadge}
+      </div>
+      <div class="book-info">
+        <div class="book-title">${b.title}</div>
+        <div class="book-author">${b.author}</div>
+        <div class="book-rating">
+          <span class="star">★</span>
+          <span class="rating-val">${b.rating.toFixed(1)}</span>
+          <span>(${b.reviews.toLocaleString()})</span>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+renderBooks();
+
+/* ════════════════════════════
+   SORT BUTTONS
+════════════════════════════ */
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeSort = btn.dataset.sort;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderBooks();
+  });
+});
+
+/* ════════════════════════════
+   SEARCH
+════════════════════════════ */
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  renderBooks();
+});
+
+/* ════════════════════════════
+   ADD BOOK
+════════════════════════════ */
+document.getElementById('addBookBtn').addEventListener('click', () => {
+  alert('Add Book feature coming soon!');
+});
+
+/* ════════════════════════════
+   SIDEBAR TOGGLE (mobile)
+════════════════════════════ */
+const sidebar   = document.getElementById('sidebar');
+const overlay   = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+
+function openSidebar()  { sidebar.classList.add('open');    overlay.classList.add('active');    document.body.style.overflow = 'hidden'; }
+function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+
+hamburger.addEventListener('click', openSidebar);
+overlay.addEventListener('click', closeSidebar);
+window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
+
+/* ════════════════════════════
+   COLLAPSE (desktop only)
+   FIX 2: Guard ensures collapse only fires on desktop
+════════════════════════════ */
+let collapsed = false;
+document.getElementById('collapseBtn').addEventListener('click', e => {
+  e.preventDefault();
+  if (window.innerWidth <= 768) return; // ignore on mobile
+  collapsed = !collapsed;
+  sidebar.classList.toggle('collapsed', collapsed);
+  const icon = document.getElementById('collapseIcon');
+  icon.innerHTML = collapsed
+    ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>`
+    : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>`;
+});
+
+/* ════════════════════════════
+   ACTIVE NAV SYNC
+   FIX 3: Only preventDefault on hash (#) links, not real hrefs
+════════════════════════════ */
+document.querySelectorAll('[data-page]').forEach(item => {
+  item.addEventListener('click', e => {
+    // Only prevent default if it's a "#" link (not a real page link)
+    const href = item.getAttribute('href');
+    if (!href || href === '#') {
+      e.preventDefault();
+    }
+    // Update active state only for items on the same page
+    document.querySelectorAll('[data-page]').forEach(el =>
+      el.classList.toggle('active', el.dataset.page === item.dataset.page)
+    );
+    if (window.innerWidth <= 768) closeSidebar();
+  });
+});
+</script>
+</body>
+</html>
