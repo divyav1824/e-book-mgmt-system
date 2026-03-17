@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Shelf - Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f6f0f0; --sidebar-bg: #171921; --card-border: #252836;
+  --accent: #f9a618; --muted: #6b7280; --text: #050506;
+  --radius: 14px; --sidebar-w: 220px; --topbar-h: 56px;
+}
+html, body { height: 100%; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+/* TOPBAR */
+.topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: var(--topbar-h); background: var(--sidebar-bg); border-bottom: 1px solid var(--card-border); align-items: center; padding: 0 16px; gap: 12px; z-index: 200; }
+.topbar-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: white; flex: 1; margin-left: 10px; }
+.hamburger { background: none; border: none; color: var(--muted); cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center; }
+.hamburger svg { width: 22px; height: 22px; }
+
+/* OVERLAY */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; }
+.overlay.show { display: block; }
+
+/* LAYOUT */
+.layout { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 24px 0; border-right: 1px solid var(--card-border); position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow: hidden; transition: width 0.3s ease, transform 0.3s ease; }
+.sidebar.is-collapsed { width: 64px; }
+.sidebar.is-collapsed .nav-label, .sidebar.is-collapsed .sidebar-logo span { display: none; }
+.sidebar.is-collapsed .nav-item { justify-content: center; padding: 13px; margin: 2px 6px; }
+.sidebar.is-collapsed .sidebar-logo { justify-content: center; padding: 0 0 28px; }
+.sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 0 20px 28px; white-space: nowrap; }
+.sidebar-logo span { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: white; }
+.logo-icon { width: 32px; height: 32px; background: #3233358e; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.nav-item { display: flex; align-items: center; gap: 13px; padding: 13px 20px; cursor: pointer; color: var(--muted); font-size: 15px; font-weight: 600; transition: all 0.2s; border-radius: 10px; margin: 2px 10px; text-decoration: none; white-space: nowrap; overflow: hidden; }
+.nav-item:hover { background: #1e2130; color: white; }
+.nav-item.active { color: var(--accent); }
+.nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+.sidebar-bottom { margin-top: auto; padding: 0 10px; }
+
+/* MAIN */
+.main { flex: 1; margin-left: var(--sidebar-w); padding: 32px 36px; min-width: 0; overflow-x: hidden; transition: margin-left 0.3s ease; }
+.sidebar.is-collapsed ~ .main { margin-left: 64px; }
+
+/* PAGE HEADER */
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
+.page-title { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: #0f1117; margin-bottom: 4px; }
+.page-subtitle { color: var(--muted); font-size: 14px; }
+
+/* STATS ROW */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+.stat-card { background: white; border-radius: var(--radius); padding: 22px 24px; border: 1px solid #e5e7eb; transition: box-shadow 0.2s; }
+.stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.stat-icon { font-size: 26px; margin-bottom: 10px; }
+.stat-label { font-size: 13px; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
+.stat-value { font-size: 32px; font-weight: 700; color: #0f1117; font-family: 'Playfair Display', serif; }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; background: #f3f4f6; border-radius: 10px; padding: 4px; margin-bottom: 28px; width: fit-content; }
+.tab-btn { padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: #6b7280; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.tab-btn.active { background: white; color: #0f1117; font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+/* SECTION */
+.section { background: white; border-radius: var(--radius); border: 1px solid #e5e7eb; margin-bottom: 28px; overflow: hidden; }
+.section-header { padding: 18px 24px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.section-title { font-size: 16px; font-weight: 700; color: #0f1117; }
+.section-count { font-size: 13px; color: var(--muted); background: #f3f4f6; padding: 4px 12px; border-radius: 999px; }
+
+/* SEARCH */
+.admin-search { padding: 9px 14px; border: 1.5px solid #e0e0e2; border-radius: 9px; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; width: 240px; transition: border-color 0.2s; background: #fafafa; }
+.admin-search:focus { border-color: var(--accent); background: white; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.admin-table th { padding: 11px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 1px solid #f3f4f6; background: #fafafa; }
+.admin-table td { padding: 14px 20px; font-size: 14px; color: #374151; border-bottom: 1px solid #f9fafb; vertical-align: middle; }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: #fafafa; }
+
+/* BOOK CELL */
+.book-info-cell { display: flex; align-items: center; gap: 12px; }
+.book-thumb { width: 40px; height: 54px; object-fit: cover; border-radius: 5px; background: #e5e7eb; flex-shrink: 0; }
+.book-name { font-weight: 600; color: #0f1117; font-size: 14px; }
+.book-meta-small { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+
+/* BADGES */
+.badge-genre { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; background: #f3f4f6; color: #374151; }
+.badge-format { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0369a1; }
+
+/* STARS */
+.stars-display { color: #f9a618; font-size: 15px; letter-spacing: 1px; }
+.stars-empty { color: #d1d5db; }
+
+/* REVIEW TEXT */
+.review-text-cell { max-width: 280px; white-space: normal; font-size: 13px; color: #6b7280; line-height: 1.5; }
+.no-review-text { font-size: 12px; color: #9ca3af; font-style: italic; }
+
+/* UPLOADER BADGE */
+.uploader-you { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 600; background: #fef9ec; color: #b45309; }
+
+/* ACTION BUTTONS */
+.delete-btn { padding: 6px 14px; background: #fee2e2; color: #ef4444; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+.delete-btn:hover { background: #fecaca; }
+
+/* EMPTY / LOADING STATES */
+.empty-row td { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 14px; }
+.loading-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+
+/* ACCESS DENIED OVERLAY */
+.access-denied { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 16px; }
+.access-denied h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: #0f1117; }
+.access-denied p { color: var(--muted); font-size: 15px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #0f1117; color: white; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 500; z-index: 9999; transition: transform 0.3s ease; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { background: #10b981; }
+.toast.error { background: #ef4444; }
+
+/* RESPONSIVE */
+@media (max-width: 1100px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) {
+  .topbar { display: flex; }
+  .sidebar { transform: translateX(-100%); width: 220px !important; }
+  .sidebar.is-open { transform: translateX(0); }
+  .main { margin-left: 0 !important; margin-top: var(--topbar-h); padding: 20px 16px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .admin-search { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR (mobile) -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div class="logo-icon"><i class="fa-solid fa-book-open" style="color:#f9a618"></i></div>
+  <span class="topbar-title">Admin Panel</span>
+</header>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-book-open" style="color:#f9a618"></i></div>
+      <span>Digital Shelf</span>
+    </div>
+    <nav>
+      <a class="nav-item" href="dashpage.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" href="lib1.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span class="nav-label">Library</span>
+      </a>
+      <a class="nav-item" href="collection.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <span class="nav-label">Collections</span>
+      </a>
+      <a class="nav-item" href="analytics.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span class="nav-label">Analytics</span>
+      </a>
+      <a class="nav-item" href="setting.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <a class="nav-item active" href="Admin.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <span class="nav-label">Admin Panel</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a class="nav-item" href="#" id="collapseBtn">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+        <span class="nav-label">Collapse</span>
+      </a>
+      <a class="nav-item" href="#" id="logoutBtn">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <span class="nav-label">Log out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Admin Panel</h1>
+        <p class="page-subtitle">Manage all books, users, and content across Digital Shelf.</p>
+      </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 18px;font-size:13px;color:#374151;">
+        👤 Logged in as <strong id="adminEmailDisplay">—</strong>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-label">Total Books</div>
+        <div class="stat-value" id="statBooks">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">Unique Uploaders</div>
+        <div class="stat-value" id="statUsers">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⬇️</div>
+        <div class="stat-label">Total Downloads</div>
+        <div class="stat-value" id="statDownloads">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-label">Total Ratings</div>
+        <div class="stat-value" id="statReviews">—</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="books">📚 All Books</button>
+      <button class="tab-btn" data-tab="reviews">⭐ Ratings & Reviews</button>
+    </div>
+
+    <!-- BOOKS TAB -->
+    <div id="tabBooks">
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">All Books in Library</span>
+          <input type="text" class="admin-search" id="bookSearch" placeholder="🔍 Search by title or author...">
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Book</th>
+                <th>Genre</th>
+                <th>Format</th>
+                <th>Downloads</th>
+                <th>Added</th>
+                <th>Uploader</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="booksTableBody">
+              <tr class="loading-row"><td colspan="7">⏳ Loading books...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS TAB -->
+    <div id="tabReviews" style="display:none">
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">All Ratings & Reviews</span>
+          <span class="section-count" id="reviewCount">0 total</span>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Book</th>
+                <th>Rating</th>
+                <th>Review Text</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsTableBody">
+              <tr class="loading-row"><td colspan="5">⏳ Loading reviews...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script src="https://kit.fontawesome.com/4318880fa2.js" crossorigin="anonymous"></script>
+
+<!-- SIDEBAR SCRIPT -->
+<script>
+  const sidebar = document.getElementById('sidebar')
+  const overlay = document.getElementById('overlay')
+
+  if (document.getElementById('hamburger')) {
+    document.getElementById('hamburger').addEventListener('click', () => {
+      sidebar.classList.add('is-open')
+      overlay.classList.add('show')
+    })
+  }
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('is-open')
+    overlay.classList.remove('show')
+  })
+  document.getElementById('collapseBtn').addEventListener('click', e => {
+    e.preventDefault()
+    if (window.innerWidth <= 768) return
+    sidebar.classList.toggle('is-collapsed')
+  })
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 768) {
+      sidebar.classList.remove('is-collapsed')
+      sidebar.classList.remove('is-open')
+      overlay.classList.remove('show')
+    }
+  })
+
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      document.getElementById('tabBooks').style.display = btn.dataset.tab === 'books' ? '' : 'none'
+      document.getElementById('tabReviews').style.display = btn.dataset.tab === 'reviews' ? '' : 'none'
+    })
+  })
+</script>
+
+<!-- SUPABASE MODULE SCRIPT -->
+<script type="module">
+  import { supabase } from './supabase.js'
+
+  // ── AUTH CHECK ──
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) {
+    window.location.href = 'index.html'
+  }
+
+  const ADMIN_EMAILS = ['dv994704@gmail.com'] // ← Add your admin email(s) here
+  if (!ADMIN_EMAILS.includes(session.user.email)) {
+    alert('Access denied. Admins only.')
+    window.location.href = 'lib1.html'
+  }
+
+  // Show admin email
+  document.getElementById('adminEmailDisplay').textContent = session.user.email
+
+  document.getElementById('logoutBtn').addEventListener('click', async e => {
+    e.preventDefault()
+    await supabase.auth.signOut()
+    window.location.href = 'index.html'
+  })
+
+  let allBooks = []
+  let allRatings = []
+  const currentUserId = session.user.id
+
+  // ── LOAD ALL DATA ──
+  async function loadData() {
+    const [booksRes, ratingsRes] = await Promise.all([
+      supabase.from('books').select('*').order('created_at', { ascending: false }),
+      supabase.from('ratings').select('*').order('created_at', { ascending: false })
+    ])
+
+    if (booksRes.error) {
+      console.error('Books error:', booksRes.error)
+      showToast('Error loading books: ' + booksRes.error.message, 'error')
+    }
+    if (ratingsRes.error) {
+      console.error('Ratings error:', ratingsRes.error)
+    }
+
+    allBooks = booksRes.data || []
+    allRatings = ratingsRes.data || []
+
+    // ── STATS ──
+    document.getElementById('statBooks').textContent = allBooks.length
+    document.getElementById('statDownloads').textContent = allBooks.reduce((s, b) => s + (b.download_count || 0), 0)
+    document.getElementById('statReviews').textContent = allRatings.length
+
+    // Unique uploaders count (distinct user_ids from books)
+    const uniqueUploaders = new Set(allBooks.map(b => b.user_id)).size
+    document.getElementById('statUsers').textContent = uniqueUploaders
+
+    renderBooksTable(allBooks)
+    renderReviewsTable(allRatings)
+  }
+
+  // ── RENDER BOOKS TABLE ──
+  function renderBooksTable(books) {
+    const tbody = document.getElementById('booksTableBody')
+    if (books.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="7">📭 No books found.</td></tr>'
+      return
+    }
+    const defaultImg = 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&q=60'
+    tbody.innerHTML = books.map(b => {
+      const date = new Date(b.created_at).toLocaleDateString()
+      const isYours = b.user_id === currentUserId
+      const safeTitle = b.title.replace(/'/g, "\\'").replace(/"/g, '&quot;')
+      return `
+        <tr>
+          <td>
+            <div class="book-info-cell">
+              <img class="book-thumb" src="${b.cover_url || defaultImg}" alt="${b.title}" onerror="this.src='${defaultImg}'">
+              <div>
+                <div class="book-name">${b.title}</div>
+                <div class="book-meta-small">by ${b.author}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge-genre">${b.genre || 'Other'}</span></td>
+          <td><span class="badge-format">${(b.format || 'pdf').toUpperCase()}</span></td>
+          <td><strong>${b.download_count || 0}</strong></td>
+          <td style="color:#6b7280;font-size:13px">${date}</td>
+          <td>${isYours ? '<span class="uploader-you">You</span>' : '<span style="font-size:12px;color:#9ca3af">Other user</span>'}</td>
+          <td>
+            <button class="delete-btn" onclick="adminDeleteBook('${b.id}', '${safeTitle}')">
+              🗑 Delete
+            </button>
+          </td>
+        </tr>`
+    }).join('')
+  }
+
+  // ── RENDER REVIEWS TABLE ──
+  function renderReviewsTable(ratings) {
+    const tbody = document.getElementById('reviewsTableBody')
+    document.getElementById('reviewCount').textContent = `${ratings.length} total`
+
+    if (ratings.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">⭐ No ratings yet.</td></tr>'
+      return
+    }
+
+    tbody.innerHTML = ratings.map(r => {
+      const book = allBooks.find(b => b.id === r.book_id)
+      const date = new Date(r.created_at).toLocaleDateString()
+      const filledStars = '★'.repeat(r.rating)
+      const emptyStars = '★'.repeat(5 - r.rating)
+      const reviewText = r.review && r.review.trim()
+        ? r.review
+        : null
+      return `
+        <tr>
+          <td>
+            <div style="font-weight:600;color:#0f1117;font-size:14px">${book?.title || '<em style="color:#9ca3af">Deleted book</em>'}</div>
+            ${book ? `<div style="font-size:12px;color:#9ca3af">by ${book.author}</div>` : ''}
+          </td>
+          <td>
+            <span class="stars-display">${filledStars}</span><span class="stars-display stars-empty">${emptyStars}</span>
+            <span style="font-size:12px;color:#6b7280;margin-left:4px">${r.rating}/5</span>
+          </td>
+          <td class="review-text-cell">
+            ${reviewText
+              ? `"${reviewText}"`
+              : '<span class="no-review-text">No text — rating only</span>'}
+          </td>
+          <td style="color:#6b7280;font-size:13px">${date}</td>
+          <td>
+            <button class="delete-btn" onclick="adminDeleteReview('${r.id}')">
+              🗑 Delete
+            </button>
+          </td>
+        </tr>`
+    }).join('')
+  }
+
+  // ── DELETE BOOK (admin can delete any book) ──
+  window.adminDeleteBook = async (bookId, title) => {
+    if (!confirm(`⚠️ Delete "${title}" from the library?\n\nThis will also delete all its ratings, bookmarks, and reading progress. This cannot be undone.`)) return
+
+    showToast('Deleting...', 'success')
+
+    // Delete all related data first
+    await Promise.all([
+      supabase.from('reading_progress').delete().eq('book_id', bookId),
+      supabase.from('bookmarks').delete().eq('book_id', bookId),
+      supabase.from('ratings').delete().eq('book_id', bookId)
+    ])
+
+    // Delete the book itself — admin can delete any book (no user_id filter)
+    const { error } = await supabase.from('books').delete().eq('id', bookId)
+
+    if (error) {
+      showToast('Error: ' + error.message, 'error')
+      return
+    }
+
+    allBooks = allBooks.filter(b => b.id !== bookId)
+    allRatings = allRatings.filter(r => r.book_id !== bookId)
+
+    document.getElementById('statBooks').textContent = allBooks.length
+    document.getElementById('statDownloads').textContent = allBooks.reduce((s, b) => s + (b.download_count || 0), 0)
+    document.getElementById('statReviews').textContent = allRatings.length
+    const uniqueUploaders = new Set(allBooks.map(b => b.user_id)).size
+    document.getElementById('statUsers').textContent = uniqueUploaders
+
+    renderBooksTable(allBooks)
+    renderReviewsTable(allRatings)
+    showToast(`"${title}" deleted successfully ✓`, 'success')
+  }
+
+  // ── DELETE REVIEW ──
+  window.adminDeleteReview = async (reviewId) => {
+    if (!confirm('Delete this rating/review? This cannot be undone.')) return
+
+    const { error } = await supabase.from('ratings').delete().eq('id', reviewId)
+
+    if (error) {
+      showToast('Error: ' + error.message, 'error')
+      return
+    }
+
+    allRatings = allRatings.filter(r => r.id !== reviewId)
+    document.getElementById('statReviews').textContent = allRatings.length
+    renderReviewsTable(allRatings)
+    showToast('Rating deleted ✓', 'success')
+  }
+
+  // ── BOOK SEARCH ──
+  document.getElementById('bookSearch').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim()
+    if (!q) {
+      renderBooksTable(allBooks)
+      return
+    }
+    const filtered = allBooks.filter(b =>
+      b.title.toLowerCase().includes(q) ||
+      b.author.toLowerCase().includes(q) ||
+      (b.genre || '').toLowerCase().includes(q)
+    )
+    renderBooksTable(filtered)
+  })
+
+  // ── TOAST ──
+  let toastTimer
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast')
+    t.className = 'toast ' + type
+    document.getElementById('toastMsg').textContent = msg
+    t.classList.add('show')
+    clearTimeout(toastTimer)
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500)
+  }
+
+  // ── INIT ──
+  await loadData()
+</script>
+</body>
+</html>
