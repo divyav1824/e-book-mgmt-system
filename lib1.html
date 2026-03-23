@@ -52,7 +52,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .sidebar.is-collapsed .sidebar-logo span { display: none; }
 .sidebar.is-collapsed .nav-item { justify-content: center; padding: 13px; margin: 2px 6px; }
 .sidebar.is-collapsed .sidebar-logo { justify-content: center; padding: 0 0 28px; }
-.sidebar.is-collapsed .notif-badge { display: none; }
 
 .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 0 20px 28px; white-space: nowrap; }
 .sidebar-logo span { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: white; letter-spacing: -0.2px; }
@@ -61,10 +60,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .nav-item.active { color: var(--accent); background: transparent; }
 .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
 .sidebar-bottom { margin-top: auto; padding: 0 10px; }
-
-/* NOTIFICATION BADGE */
-.notif-badge { background: #ef4444; color: white; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 999px; display: none; align-items: center; justify-content: center; padding: 0 5px; margin-left: auto; }
-.notif-badge.show { display: flex; }
 
 /* MAIN */
 .main {
@@ -77,6 +72,45 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 /* PAGE HEADER */
 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 14px; }
 .page-title { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: #0f1117; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+
+/* NOTIFICATION BELL BUTTON */
+.notif-btn {
+  position: relative;
+  background: #fff;
+  border: 1.5px solid #e0e0e2;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.notif-btn:hover { background: #f3f4f6; border-color: #c3c4c7; }
+.notif-btn svg { width: 20px; height: 20px; color: #374151; }
+.notif-btn-badge {
+  display: none;
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+  border: 2px solid var(--bg);
+}
+.notif-btn-badge.show { display: flex; }
+
 .add-book-btn { display: flex; align-items: center; gap: 8px; background: var(--accent); color: #0f1117; border: none; border-radius: 10px; padding: 11px 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
 .add-book-btn:hover { opacity: 0.88; }
 .add-book-btn svg { width: 17px; height: 17px; }
@@ -122,11 +156,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .book-card:hover .book-delete-btn { display: flex; }
 .book-delete-btn:hover { background: #dc2626; }
 .book-delete-btn svg { width: 13px; height: 13px; }
-
-/* STAR RATING ON CARD */
-.card-stars { display: flex; gap: 2px; padding: 0 14px 10px; }
-.card-star { font-size: 11px; color: #d1d5db; }
-.card-star.filled { color: #f9a618; }
 
 .book-info { padding: 14px 14px 10px; }
 .book-title { font-weight: 600; font-size: 14px; line-height: 1.35; margin-bottom: 3px; }
@@ -351,17 +380,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         <span class="nav-label">Settings</span>
       </a>
-      <!-- NOTIFICATIONS -->
-      <!-- <a class="nav-item" href="#" id="notifBtn">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-        <span class="nav-label">Notifications</span>
-        <span class="notif-badge" id="notifBadge">0</span>
-      </a> -->
-      <!-- ADMIN (shown only if admin) -->
-      <a class="nav-item" href="Admin.html" id="adminLink" style="display:none">
+      <!-- ADMIN PANEL - always visible -->
+      <a class="nav-item" href="Admin.html" id="adminLink">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         <span class="nav-label">Admin Panel</span>
       </a>
+      <a class="nav-item" href="Admin.html" id="adminLink">  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <span class="nav-label">Admin Panel</span>
+      </a>
+      
     </nav>
     <div class="sidebar-bottom">
       <a class="nav-item" href="#" id="collapseBtn">
@@ -379,21 +406,24 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   <main class="main" id="main">
 
     <!-- LIBRARY VIEW -->
-        <a class="nav-item" href="#" id="notifBtn">
-        <!-- <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-          --><i class="fa-solid fa-bell" style="color: rgb(30, 48, 80);"></i>
-        <span class="nav-label"></span>
-        <span class="notif-badge" id="notifBadge">0</span>
-      </a>
-
     <div id="libraryView">
       <div class="page-header">
         <h1 class="page-title">Library</h1>
-        <button class="add-book-btn" id="addBookBtn">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-          Add Book
-        </button>
+        <div class="header-actions">
+          <!-- NOTIFICATION BELL (unique id: bellBtn, unique badge id: bellBadge) -->
+          <button class="notif-btn" id="bellBtn" title="Notifications">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <span class="notif-btn-badge" id="bellBadge">0</span>
+          </button>
+          <button class="add-book-btn" id="addBookBtn">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            Add Book
+          </button>
+        </div>
       </div>
+
       <div class="search-sort-row">
         <div class="search-wrap">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -615,10 +645,9 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     }
   });
 
-  // Notifications panel
+  // Bell button opens notifications panel
   const notifPanel = document.getElementById('notifPanel');
-  document.getElementById('notifBtn').addEventListener('click', e => {
-    e.preventDefault();
+  document.getElementById('bellBtn').addEventListener('click', () => {
     notifPanel.classList.toggle('open');
   });
   document.getElementById('notifPanelClose').addEventListener('click', () => {
@@ -635,10 +664,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   const userId = session.user.id
   const userEmail = session.user.email
 
-  // Check if admin (first registered user or specific email)
-  const ADMIN_EMAILS = ['dv994704@gmail.com'] // Add your admin email here
-  if (ADMIN_EMAILS.includes(userEmail)) {
-    document.getElementById('adminLink').style.display = 'flex'
+  // Admin check — only show admin link to admin emails
+  const ADMIN_EMAILS = ['dv994704@gmail.com']
+  if (!ADMIN_EMAILS.includes(userEmail)) {
+    document.getElementById('adminLink').style.display = 'none'
   }
 
   document.getElementById('logoutBtn').addEventListener('click', async e => {
@@ -760,12 +789,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       const card = document.createElement('div')
       card.className = 'book-card'
 
-      // Build star HTML for card
-      let starsHtml = ''
-      for (let i = 1; i <= 5; i++) {
-        starsHtml += `<span class="card-star ${i <= Math.round(avgRating) ? 'filled' : ''}">★</span>`
-      }
-
       card.innerHTML = `
         <div class="book-img-wrap">
           <img src="${b.cover_url || defaultImg}" alt="${b.title}" loading="lazy">
@@ -832,7 +855,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       btn.querySelector('svg').setAttribute('fill', 'currentColor')
       showToast('Bookmarked! ★', 'success')
     }
-    // Update detail bookmark btn if open
     const detailBm = document.getElementById('bookmarkDetailBtn')
     if (currentBookId === bookId) {
       const nowBookmarked = allBookmarks.some(bm => bm.book_id === bookId)
@@ -863,16 +885,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     meta.innerHTML += `<div class="detail-meta-item"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>${(book.format || 'book').toUpperCase()}</div>`
     if (book.download_count > 0) meta.innerHTML += `<div class="detail-meta-item">⬇ ${book.download_count} downloads</div>`
 
-    // Stars
     renderDetailStars(myRating)
     const avgEl = document.getElementById('avgRating')
     const ratingCount = allRatings.filter(r => r.book_id === book.id).length
     avgEl.textContent = ratingCount > 0 ? `Avg: ${avgRating.toFixed(1)} (${ratingCount} ratings)` : 'No ratings yet'
 
-    // Pre-fill review
     document.getElementById('reviewText').value = myRatingObj?.review || ''
 
-    // Star click handlers
     document.querySelectorAll('.star-btn').forEach(btn => {
       btn.onclick = () => {
         myRating = parseInt(btn.dataset.val)
@@ -889,27 +908,50 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       }
     })
 
+    // ── FIXED REVIEW SUBMIT ──
     document.getElementById('submitReviewBtn').onclick = async () => {
       if (!myRating) { showToast('Please select a star rating first', 'error'); return }
       const review = document.getElementById('reviewText').value.trim()
+
       const { error } = await supabase.from('ratings').upsert({
-        user_id: userId, book_id: book.id, rating: myRating, review,
+        user_id: userId,
+        book_id: book.id,
+        rating: myRating,
+        review: review,
         created_at: new Date().toISOString()
       }, { onConflict: 'user_id,book_id' })
-      if (!error) {
-        // Update local
+
+      if (error) {
+        showToast('Error saving review: ' + error.message, 'error')
+        return
+      }
+
+      // Re-fetch ALL ratings for this book fresh from DB
+      const { data: freshRatings, error: fetchErr } = await supabase
+        .from('ratings')
+        .select('*')
+        .eq('book_id', book.id)
+
+      if (!fetchErr && freshRatings) {
+        // Remove old ratings for this book and replace with fresh data
+        allRatings = allRatings.filter(r => r.book_id !== book.id)
+        allRatings = [...allRatings, ...freshRatings]
+      } else {
+        // Fallback: update locally
         const idx = allRatings.findIndex(r => r.book_id === book.id && r.user_id === userId)
         const newRating = { user_id: userId, book_id: book.id, rating: myRating, review, created_at: new Date().toISOString() }
         if (idx >= 0) allRatings[idx] = newRating
         else allRatings.push(newRating)
-        showToast('Review submitted! ⭐', 'success')
-        loadReviews(book.id)
-        const newAvg = getAvgRating(book.id)
-        document.getElementById('avgRating').textContent = `Avg: ${newAvg.toFixed(1)} (${allRatings.filter(r => r.book_id === book.id).length} ratings)`
       }
+
+      showToast('Review submitted! ⭐', 'success')
+      loadReviews(book.id)
+
+      const newAvg = getAvgRating(book.id)
+      const newCount = allRatings.filter(r => r.book_id === book.id).length
+      document.getElementById('avgRating').textContent = `Avg: ${newAvg.toFixed(1)} (${newCount} ratings)`
     }
 
-    // Progress
     document.getElementById('progressFill').style.width = pct + '%'
     document.getElementById('progressPct').textContent = pct + '%'
     const slider = document.getElementById('progressSlider')
@@ -923,18 +965,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       await updateProgress(book.id, parseInt(this.value), book.total_pages)
     }
 
-    // Continue reading
     const contBtn = document.getElementById('continueReadingBtn')
     contBtn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
       ${pct >= 100 ? 'Read Again' : pct > 0 ? 'Continue Reading' : 'Start Reading'}`
     contBtn.onclick = () => { window.location.href = `reader.html?id=${book.id}` }
 
-    // Download
     const dlBtn = document.getElementById('downloadBookBtn')
     if (book.file_url) {
       dlBtn.style.display = 'inline-flex'
       dlBtn.onclick = async () => {
-        // Increment download count
         await supabase.from('books').update({ download_count: (book.download_count || 0) + 1 }).eq('id', book.id)
         book.download_count = (book.download_count || 0) + 1
         const a = document.createElement('a')
@@ -950,19 +989,17 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
       dlBtn.style.display = 'none'
     }
 
-    // Bookmark
     const bmBtn = document.getElementById('bookmarkDetailBtn')
     bmBtn.className = `btn-secondary ${isBookmarked ? 'bookmarked' : ''}`
     bmBtn.innerHTML = `<svg fill="${isBookmarked ? 'currentColor' : 'none'}" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> ${isBookmarked ? 'Bookmarked' : 'Bookmark'}`
     bmBtn.onclick = async () => {
-      const fakeBtnEl = { classList: { contains: (c) => bmBtn.className.includes('bookmarked'), remove: () => {}, add: () => {} }, querySelector: () => ({ setAttribute: () => {} }) }
+      const fakeBtnEl = { classList: { contains: () => bmBtn.className.includes('bookmarked'), remove: () => {}, add: () => {} }, querySelector: () => ({ setAttribute: () => {} }) }
       await toggleBookmark(book.id, fakeBtnEl)
       const nowBm = allBookmarks.some(bm => bm.book_id === book.id)
       bmBtn.className = `btn-secondary ${nowBm ? 'bookmarked' : ''}`
       bmBtn.innerHTML = `<svg fill="${nowBm ? 'currentColor' : 'none'}" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> ${nowBm ? 'Bookmarked' : 'Bookmark'}`
     }
 
-    // Delete
     const delBtn = document.getElementById('deleteBookBtn')
     if (isMyBook) {
       delBtn.style.display = 'inline-flex'
@@ -989,20 +1026,20 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
   async function loadReviews(bookId) {
     const reviewsList = document.getElementById('reviewsList')
-    const bookRatings = allRatings.filter(r => r.book_id === bookId && r.review)
+    // Show ALL ratings that have a review text
+    const bookRatings = allRatings.filter(r => r.book_id === bookId && r.review && r.review.trim() !== '')
     if (bookRatings.length === 0) {
       reviewsList.innerHTML = '<p class="no-reviews">No reviews yet. Be the first!</p>'
       return
     }
     reviewsList.innerHTML = bookRatings.map(r => {
-      const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating)
       const date = new Date(r.created_at).toLocaleDateString()
       const isMe = r.user_id === userId
       return `
         <div class="review-item">
           <div class="review-header">
             <span class="review-user">${isMe ? '👤 You' : '👤 Reader'}</span>
-            <div class="review-stars">${stars.split('').map((s, i) => `<span class="review-star ${i < r.rating ? 'filled' : ''}">${s}</span>`).join('')}</div>
+            <div class="review-stars">${[1,2,3,4,5].map(i => `<span class="review-star ${i <= r.rating ? 'filled' : ''}">★</span>`).join('')}</div>
           </div>
           <div class="review-text">${r.review}</div>
           <div class="review-date">${date}</div>
@@ -1040,11 +1077,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // NOTIFICATIONS — show recently added books
+  // NOTIFICATIONS — show recently added books by other users
   // ═══════════════════════════════════════════════════════════════
-  async function loadNotifications() {
+  function loadNotifications() {
     const notifList = document.getElementById('notifList')
-    // Get books added in last 7 days, not by current user
+    const badge = document.getElementById('bellBadge')
+
     const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
     const recentBooks = allBooks.filter(b =>
       b.created_at > cutoff && b.user_id !== userId
@@ -1052,12 +1090,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
     if (recentBooks.length === 0) {
       notifList.innerHTML = '<div class="notif-empty">No new books this week</div>'
-      document.getElementById('notifBadge').classList.remove('show')
+      badge.classList.remove('show')
       return
     }
 
-    document.getElementById('notifBadge').textContent = recentBooks.length
-    document.getElementById('notifBadge').classList.add('show')
+    badge.textContent = recentBooks.length
+    badge.classList.add('show')
 
     notifList.innerHTML = recentBooks.map(b => {
       const timeAgo = getTimeAgo(b.created_at)
@@ -1217,7 +1255,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   }
   document.getElementById('backBtn').addEventListener('click', hideDetail)
 
-  // Toast
   let toastTimer
   function showToast(msg, type = 'success') {
     const t = document.getElementById('toast')
